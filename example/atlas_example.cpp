@@ -58,7 +58,7 @@ int main() {
 
 	// Load frameset and bind it to a sprite
 	sf::Texture frameset;
-	assert(frameset.loadFromFile("atlas.png")); // <-- file was created by atlas
+	frameset.loadFromFile("atlas.png"); // <-- file was created by atlas
 	sf::Sprite sprite;
 	sprite.setTexture(frameset);
 
