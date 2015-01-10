@@ -1,9 +1,23 @@
 SfmlExt
 =======
 
-All extensions' examples make use of resources from **Battle for Wesnoth**, which are NOT included here. Battle for Wesnoth is an open-source game, so you can easily get it's resources.
+**Dependencies**
+- C++11
+- SFML 2.2 (might also work with 2.x, but not tested, yet)
+- Boost.Math
+- Thor (examples only!)
+
+**Licence**
+All graphics and sounds/music are taken from **Battle for Wesnoth**, so all copyright is reserved by the corresponding artists. See www.wesnoth.org for more details. See the `LICENCE` file for information about the source code of this repository. Feel free to share!
 
 **Features**
-- `image_atlas`: Provides adding multiple images to container, which is another image. When adding, the atlas tells you where to find the original image inside the container. See `altas_example.cpp` for further details.
-- `resource_cache` and `resource_archive`: Provides a simple API to cache resources and deal with binary resource archive files. A cached resource is uniquely owned by the cache. So a reference is returned (or an exception thrown) when querying a resource. An archive allows to dump multiple resources (of the same type) into a single binary file. The API allows writing and reading such files.
+- `atlas`: Provides image atlas creating to create large framesets from many small single frames.
+- `cache`: Provides unique ownership based resource caching. Each resource is identified by it's filename.
 
+See `examples/` directory for full (compilable) examples.
+
+**Future plans**
+- Extend `cache` to handle sf::Shader
+- `tiling`: Abstraction of different 2d tiling approaches, such as orthogonal, isometric and hexagonal grids.
+- `gui`: A light-weight and highly customizable gui implementation without mouse support (but keyboard/gamepad access).
+- `astar`: A customized A*-implementation for 2d grids, because typical A* on general graphs cannot easily be implemented with `std::priority_queue`.
