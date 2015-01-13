@@ -66,7 +66,7 @@ int main() {
 	// bind actions
 	gui.bindAction(
 		sfext::Action::Activate,
-		// bind return, space and gamepad button #0 on key release
+		// bind return, space and gamepad button #0 on release
 		thor::Action(sf::Keyboard::Return, thor::Action::ReleaseOnce) ||
 		thor::Action(sf::Keyboard::Space, thor::Action::ReleaseOnce) ||
 		thor::Action(thor::joystick(0).button(0), thor::Action::ReleaseOnce)
@@ -87,10 +87,10 @@ int main() {
 	
 	// create lambda callbacks
 	auto onStart = []() {
-		std::cout << "Starting is just a dummy :)" << std::endl;
+		std::cout << "Starting option is just a dummy :)" << std::endl;
 	};
 	auto onLoad = []() {
-		std::cout << "Loading doesn't work either" << std::endl;
+		std::cout << "Loading doesn't work neither" << std::endl;
 	};
 	auto onSettings = [&]() {
 		std::cout << "Aaah c'mon XD" << std::endl;
