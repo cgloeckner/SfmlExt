@@ -15,7 +15,7 @@ This is a small set of features I found useful when writing Games using C++ and 
 - `atlas`: Image atlas implementation to create large framesets from many small single frames.
 - `cache`: Multi-resource cache holding unique ownership. Each resource is identified by it's filename.
 - `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling).
-- `lightu`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
+- `lightui`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
 
 See `examples/` directory for full (compilable) examples.
 
