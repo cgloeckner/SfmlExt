@@ -1,10 +1,8 @@
 #pragma once
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/View.hpp>
 #include <vector>
 #include <cassert>
-
-#include <iostream>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/View.hpp>
 
 namespace sfext {
 
