@@ -43,7 +43,6 @@ int main() {
 	// prepare rendering
 	sf::RenderWindow window{{320, 240}, "LightUI example"};
 	sf::Clock clock;
-	//window.setKeyRepeatEnabled(false); // note: up/down will be bound "hold"
 	sf::Font font;
 	font.loadFromFile("data/DejaVuSans.ttf");
 	bool running{true};
