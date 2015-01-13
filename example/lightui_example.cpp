@@ -45,7 +45,6 @@ int main() {
 	sf::Clock clock;
 	sf::Font font;
 	font.loadFromFile("data/DejaVuSans.ttf");
-	bool running{true};
 	
 	// create gui and widgets
 	sfext::Gui gui{sf::milliseconds(150)};
@@ -99,7 +98,7 @@ int main() {
 	};
 	auto onQuit = [&]() {
 		std::cout << "Cya^^" << std::endl;
-		running = false;
+		window.close();
 	};
 	
 	// bind callbacks
@@ -108,7 +107,7 @@ int main() {
 	gui.bindCallback(settings,	onSettings);
 	gui.bindCallback(quit,		onQuit);
 	
-	while (running && window.isOpen()) {
+	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			gui.notify(event); // collect events
