@@ -1,4 +1,4 @@
-#include <lightui.hpp>
+#include <SfmlExt/lightui.hpp>
 
 namespace sfext {
 

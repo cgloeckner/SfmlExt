@@ -1,168 +1,10 @@
 #pragma once
-#include <vector>
 #include <cassert>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/View.hpp>
-
-namespace sfext {
-
-/// Supported grid modes
-enum class GridMode {
-	Orthogonal, IsoDiamond
-	// later: IsoStaggered, Hexagonal
-};
-
-/// Provides several tiling functionality depending on the actual grid mode
-/**
- * The given GridMode M determines the actual tiling approach. See `GridMode`
- * for a list of all supported modes.
- * Each tiling instance can perform operations of tiling coordinates according
- * to the given mode. Some operations require a camera to be set.
- */
-template <GridMode M>
-class Tiling {
-	private:
-		/// Used for iteration over visible area
-		class Iterator {
-			private:
-				sf::Vector2i current, start, range;
-				unsigned int count; // counting colums per row (iso diamond only)
-				
-			public:
-				/// Create a new iterator with a start and an iteration rage.
-				/**
-				 * @param start Tile position used as topleft starting position
-				 * @param range Number of rows and columns to iterate over
-				 */
-				Iterator(sf::Vector2i const & start, sf::Vector2i const & range);
-				
-				/// Returns the current tile position
-				/**
-				 * @return Tile position which the iterator is indicating at
-				 */
-				sf::Vector2i const & operator*() const;
-				
-				/// Used to compare two iterators
-				/**
-				 * Two iterators satisfy the != relation if their current
-				 * positions do not equal
-				 * @param other Iterator to compare with
-				 * @return true if positions do not equal
-				 */
-				bool operator!=(Iterator const & other) const;
-				
-				/// Step to next position
-				/**
-				 * The actual implementation depends on the `GridMode` given
-				 * to `Tiling`
-				 */
-				void operator++();
-				
-				/// Returns the number of columns and rows to iterate over
-				/**
-				 * @return range (as given in ctor)
-				 */
-				sf::Vector2i getRange() const;
-		};
-		
-		/// Current camera view
-		sf::View const * camera;
-		/// Number of tiles per map dimension
-		sf::Vector2u const & map_size;
-		/// Number of pixels per tile graphics' dimension
-		sf::Vector2f const & tile_size;
-		
-	public:
-		/// Create a new tiling for a fixed map size and tile size
-		/**
-		 * @param map_size number of tiles per map dimension
-		 * @param tile_size number of pixels per tile graphics' dimension
-		 */
-		Tiling(sf::Vector2u const & map_size, sf::Vector2f const & tile_size);
-		
-		/// Set the current camera's view
-		/**
-		 * Some operations require a camera to be set. This method is used to
-		 * set a sf::View as a camera. The camera can be changed during the
-		 * runtime of the tiling object to enable e.g. splitscreen rendering
-		 * with only one instance of Tiling.
-		 * @param camera The view which describes the camera
-		 */
-		void setCamera(sf::View const & camera);
-		
-		/// Returns whether the tiling uses a camera, yet
-		/**
-		 * Some operations require a camera to be set. This method is used to
-		 * check whether a camera was set.
-		 * @return true if a camera is set
-		 */
-		bool hasCamera() const;
-		
-		/// Checks whether a tile position is valid referring to map size
-		/**
-		 * A position is valid if it is located within the map boundary
-		 * @param tile_pos Tile position to check whether it is valid
-		 * @return true if tile position is valid
-		 */
-		bool isTilePos(sf::Vector2i const & tile_pos);
-		
-		/// Converts a world position to a screen position
-		/**
-		 * A world position is assumed to be in the same scale as a tile
-		 * position. Additionally a world position is float-based, so
-		 * <1.3f, 2.6f> is located at tile <1,2> with inner-tile offsets
-		 * 0.3f and 0.6f. This transformation depends on the actual `GridMode`.
-		 * @param world_pos Position in world-scale to convert to screen pos
-		 * @return Result of the position transformation.
-		 */
-		sf::Vector2f toScreen(sf::Vector2f const & world_pos) const;
-		
-		/// Converts a screen position to a world position
-		/**
-		 * A world position is assumed to be in the same scale as a tile
-		 * position. Additionally a world position is float-based, so
-		 * <1.3f, 2.6f> is located at tile <1,2> with inner-tile offsets
-		 * 0.3f and 0.6f. This transformation depends on the actual `GridMode`.
-		 * @param screen_pos Position in screen-scale to convert to world pos
-		 * @return Result of the position transformation.
-		 */
-		sf::Vector2f fromScreen(sf::Vector2f const & screen_pos) const;
-		
-		/// Returns an array of tile positions next to the given position
-		/**
-		 * The returned tile position are not automatically valid! Neigher the
-		 * given tile position is checked to be valid. You might need to check
-		 * it using `isTilePos()`. The calculation of neighbors depends on the
-		 * actual `GridMode`.
-		 * @param tile_pos Tile position used as origin
-		 * @return array of tile positions located next to tile_pos
-		 */
-		std::vector<sf::Vector2i> getNeighbors(sf::Vector2i const & tile_pos) const;
-		
-		/// Returns iterator to first tile position in range
-		/**
-		 * This operation requires a camera to be set!
-		 * @return Iterator to first tile position in range
-		 */
-		Iterator begin() const;
-		
-		/// Returns iterator to first tile position out of range
-		/**
-		 * This operation requires a camera to be set!
-		 * @return Iterator to first tile position out of range
-		 */
-		Iterator end() const;
-};
-
-} // ::sfext
-
-// ----------------------------------------------------------------------------
-// implementation
 
 namespace sfext {
 
 template <GridMode M>
-Tiling<M>::Iterator::Iterator(sf::Vector2i const & start, sf::Vector2i const & range)
+TilingIterator<M>::TilingIterator(sf::Vector2i const & start, sf::Vector2i const & range)
 	: current{start}
 	, start{start}
 	, range{range}
@@ -170,18 +12,18 @@ Tiling<M>::Iterator::Iterator(sf::Vector2i const & start, sf::Vector2i const & r
 }
 
 template <GridMode M>
-sf::Vector2i const & Tiling<M>::Iterator::operator*() const {
+sf::Vector2i const & TilingIterator<M>::operator*() const {
 	return current;
 }
 
 template <GridMode M>
-bool Tiling<M>::Iterator::operator!=(Tiling<M>::Iterator const & other) const {
+bool TilingIterator<M>::operator!=(TilingIterator<M> const & other) const {
 	return (current != other.current);
 }
 
 // specialization for orthogonal grids
 template <>
-void Tiling<GridMode::Orthogonal>::Iterator::operator++() {
+void TilingIterator<GridMode::Orthogonal>::operator++() {
 	// step through (screen) row's cells
 	++current.x;
 	if (current.x > start.x + range.x) {
@@ -194,7 +36,7 @@ void Tiling<GridMode::Orthogonal>::Iterator::operator++() {
 
 // specialization for isometric diamond grids
 template <>
-void Tiling<GridMode::IsoDiamond>::Iterator::operator++() {
+void TilingIterator<GridMode::IsoDiamond>::operator++() {
 	// step through (screen) row's cells
 	--current.y;
 	++current.x;
@@ -212,7 +54,7 @@ void Tiling<GridMode::IsoDiamond>::Iterator::operator++() {
 }
 
 template <GridMode M>
-sf::Vector2i Tiling<M>::Iterator::getRange() const {
+sf::Vector2i TilingIterator<M>::getRange() const {
 	return range;
 }
 
@@ -308,7 +150,7 @@ std::vector<sf::Vector2i> Tiling<GridMode::IsoDiamond>::getNeighbors(sf::Vector2
 
 // specialization for orthogonal maps
 template <>
-typename Tiling<GridMode::Orthogonal>::Iterator Tiling<GridMode::Orthogonal>::begin() const {
+TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -329,7 +171,7 @@ typename Tiling<GridMode::Orthogonal>::Iterator Tiling<GridMode::Orthogonal>::be
 
 // specialization for orthogonal maps
 template <>
-typename Tiling<GridMode::Orthogonal>::Iterator Tiling<GridMode::Orthogonal>::end() const {
+TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -351,7 +193,7 @@ typename Tiling<GridMode::Orthogonal>::Iterator Tiling<GridMode::Orthogonal>::en
 
 // specialization for isometric (diamond) maps
 template <>
-typename Tiling<GridMode::IsoDiamond>::Iterator Tiling<GridMode::IsoDiamond>::begin() const {
+TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -375,7 +217,7 @@ typename Tiling<GridMode::IsoDiamond>::Iterator Tiling<GridMode::IsoDiamond>::be
 
 // specialization for orthogonal maps
 template <>
-typename Tiling<GridMode::IsoDiamond>::Iterator Tiling<GridMode::IsoDiamond>::end() const {
+TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();

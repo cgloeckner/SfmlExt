@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 #include <Thor/Animation.hpp>
 
-#include <atlas.hpp>
+#include <SfmlExt/atlas.hpp>
 
 // clipping data per frame
 using AtlasData = std::map<std::string, sf::IntRect>;
@@ -22,7 +22,7 @@ AtlasData create_atlas() {
 	std::vector<sf::Image> images;
 	sfext::ImageAtlas<std::string> atlas;
 	images.resize(5);
-	for (auto i = 0u; i <= 4u; ++i) {
+	for (auto i = 0u; i < 5u; ++i) {
 		std::string fname{"data/attack" + std::to_string(i) + ".png"};
 		images.at(i).loadFromFile(fname);
 		atlas.add(fname, images.at(i));
@@ -49,7 +49,7 @@ int main() {
 
 	// Create Animation -- works just as normal (using SFML and Thor)
 	thor::FrameAnimation attack;
-	for (auto i = 1u; i <= 5u; ++i) {
+	for (auto i = 0u; i < 5u; ++i) {
 		std::string fname{"data/attack" + std::to_string(i) + ".png"};
 		attack.addFrame(1.f, clipping[fname]);
 	}
