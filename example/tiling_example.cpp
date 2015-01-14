@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include <tiling.hpp>
+#include <SfmlExt/tiling.hpp>
 
 int main() {
 	// Create tilings

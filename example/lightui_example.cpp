@@ -2,7 +2,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <lightui.hpp>
+#include <SfmlExt/lightui.hpp>
 
 class MyOption
 		: public sfext::Widget {

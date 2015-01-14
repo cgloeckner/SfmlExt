@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include <cache.hpp>
+#include <SfmlExt/cache.hpp>
 
 int main() {
 	sfext::Cache cache;
