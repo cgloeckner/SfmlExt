@@ -24,7 +24,7 @@ int main() {
 	
 	// Prepare font
 	sf::Font font;
-	font.loadFromFile("data/DejaVuSans.ttf");
+	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
 	sf::Text label;
 	label.setFont(font);
 	label.setCharacterSize(12u);

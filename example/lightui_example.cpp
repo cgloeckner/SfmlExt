@@ -44,7 +44,7 @@ int main() {
 	sf::RenderWindow window{{320, 240}, "LightUI example"};
 	sf::Clock clock;
 	sf::Font font;
-	font.loadFromFile("data/DejaVuSans.ttf");
+	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
 	
 	// create gui and widgets
 	sfext::Gui gui{sf::milliseconds(150)};

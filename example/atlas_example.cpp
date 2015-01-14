@@ -23,7 +23,7 @@ AtlasData create_atlas() {
 	sfext::ImageAtlas<std::string> atlas;
 	images.resize(5);
 	for (auto i = 0u; i < 5u; ++i) {
-		std::string fname{"data/attack" + std::to_string(i) + ".png"};
+		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
 		images.at(i).loadFromFile(fname);
 		atlas.add(fname, images.at(i));
 	}
@@ -50,7 +50,7 @@ int main() {
 	// Create Animation -- works just as normal (using SFML and Thor)
 	thor::FrameAnimation attack;
 	for (auto i = 0u; i < 5u; ++i) {
-		std::string fname{"data/attack" + std::to_string(i) + ".png"};
+		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
 		attack.addFrame(1.f, clipping[fname]);
 	}
 	thor::Animator<sf::Sprite, std::string> animator;
