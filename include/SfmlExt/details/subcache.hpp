@@ -18,6 +18,10 @@ class ISubCache {
 /// A subcache dealing with a given resource type
 /**
  * All resources are stored type-safe and using unique_ptr to obey RAII.
+<<<<<<< HEAD
+=======
+ * @see `Cache::ISubCache`
+>>>>>>> 6431f7cbad3aedee9e997375af4fa12c4926e615
  */
 template <typename Resource>
 class SubCache: public ISubCache {
