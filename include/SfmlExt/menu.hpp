@@ -84,15 +84,6 @@ class Button: public Widget {
 
 // ---------------------------------------------------------------------------
 
-/*
-class Textbox: public Widget {
-	public:
-		void handle(MenuAction action) override;
-};
-*/
-
-// ---------------------------------------------------------------------------
-
 /// Blueprint for all kind of selection widgets
 /**
  * A Select contains multiple strings and holds an index to one of these items.

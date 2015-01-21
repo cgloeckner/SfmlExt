@@ -37,23 +37,6 @@ void Button::handle(MenuAction action) {
 
 // ---------------------------------------------------------------------------
 
-/*
-Textbox::Textbox()
-	: Widget{}
-	, text{} {
-}
-
-void Textbox::setText(std::string const & text) {
-	this->text = text;
-}
-
-std::string Textbox::getText() const {
-	return text;
-}
-*/
-
-// ---------------------------------------------------------------------------
-
 Select::Select()
 	: Widget{}
 	, index{0u} {

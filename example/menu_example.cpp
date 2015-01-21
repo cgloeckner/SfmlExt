@@ -128,40 +128,6 @@ class MySelect: public sfext::Select {
 		}
 };
 
-// ---------------------------------------------------------------------------
-
-/*
-class Textbox: public Widget {
-	private:
-		std::string text;
-		
-	public:
-		Textbox();
-		
-		// tba: handle typing event
-		
-		void setText(std::string const & text);
-		std::string getText() const;
-};
-
-// ---------------------------------------------------------------------------
-
-class Selectbox
-		: public Widget
-		, public std::vector<std::string> {
-	private:
-		std::vector<std::string> items;
-		std::size_t index;
-		
-	public:
-		Selectbox();
-		
-		void handle(MenuAction action) override;
-		
-		std::size_t current() const;
-};
-*/
-
 int main() {
 	// prepare rendering
 	sf::RenderWindow window{{320, 320}, "Menu example"};
