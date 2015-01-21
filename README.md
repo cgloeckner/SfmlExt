@@ -15,11 +15,15 @@ This is a small set of features I found useful when writing Games using C++ and 
 - `atlas`: Image atlas implementation to create large framesets from many small single frames.
 - `cache`: Multi-resource cache holding unique ownership. Each resource is identified by it's filename.
 - `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling).
-- `lightui`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
+- `menu`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
 
 See `examples/` directory for full (compilable) examples.
 
 **Future plans**
 - Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
+- `state`: A customizable context-related state machine.
+- `splitcam`: A factory for splitscreen cameras using sf::View.
+- `logger`: A customizable logging mechanism with built-in logging mechanism for SFML types (such as sf::Vector2<T> or others)
+- `loading`: A thread-based progress bar implementation to enable e.g. loading game resource while redrawing the window.
 - `astar`: A customized A-Star-implementation for 2d grids, because typical A-Star on general graphs cannot easily be implemented with `std::priority_queue`.
