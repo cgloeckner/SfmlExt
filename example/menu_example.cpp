@@ -4,6 +4,7 @@
 
 #include <SfmlExt/menu.hpp>
 
+// A customized button
 class MyButton: public sfext::Button {
 	private:
 		sf::Text label;
@@ -34,6 +35,7 @@ class MyButton: public sfext::Button {
 		}
 };
 
+// A customized checkbox
 class MyCheckbox: public sfext::Button {
 	private:
 		sf::Text label;
@@ -84,6 +86,7 @@ class MyCheckbox: public sfext::Button {
 		}
 };
 
+// A customized selection
 class MySelect: public sfext::Select {
 	private:
 		sf::Text label;
@@ -148,20 +151,13 @@ int main() {
 	settings.setPosition({160, 110});
 	mode.setPosition({160, 150});
 	quit.setPosition({160, 280});
-	
-	// focus settings
-	menu.setFocus(settings);
-	
-	// hide a widget
-	option.setVisible(false);
-	
+		
 	// bind callbacks
 	start.bind([]() {
 		std::cout << "Starting option is just a dummy :)" << std::endl;
 	});
 	settings.bind([&]() {
 		std::cout << "It's like black magic ... o.o" << std::endl;
-		// toggle load-widget's visibility
 		option.setVisible(!option.isVisible());
 	});
 	option.bind([&]() {
@@ -174,16 +170,6 @@ int main() {
 		std::cout << "Cya^^" << std::endl;
 		window.close();
 	});
-	
-	// add options to "mode"
-	mode.push_back("640x480");
-	mode.push_back("800x600");
-	mode.push_back("1024x768");
-	mode.push_back("1400x900");
-	mode.push_back("very large");
-	mode.push_back("extremly large");
-	mode.push_back("xD");
-	mode.setIndex(3);
 	
 	// bind actions
 	menu.bind(
@@ -207,6 +193,19 @@ int main() {
 		thor::Action(sf::Keyboard::Right, thor::Action::PressOnce)
 	);
 	
+	// some more setup
+	mode.push_back("640x480");
+	mode.push_back("800x600");
+	mode.push_back("1024x768");
+	mode.push_back("1400x900");
+	mode.push_back("very large");
+	mode.push_back("extremly large");
+	mode.push_back("xD");
+	mode.setIndex(3);
+	menu.setFocus(settings);
+	option.setVisible(false);
+	
+	// here we go: usage is simple
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
