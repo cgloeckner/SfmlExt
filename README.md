@@ -23,6 +23,8 @@ See `examples/` directory for full (compilable) examples.
 **Future plans**
 - Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
+- Extend `menu` to provide a text input widget
+- Extend `splitcam` for a generic number of cameras
 - `state`: A customizable context-related state machine.
 - `logger`: A customizable logging mechanism with built-in logging mechanism for SFML types (such as sf::Vector2<T> or others)
 - `loading`: A thread-based progress bar implementation to enable e.g. loading game resource while redrawing the window.
