@@ -14,15 +14,16 @@ This is a small set of features I found useful when writing Games using C++ and 
 **Features**
 - `atlas`: Image atlas implementation to create large framesets from many small single frames.
 - `cache`: Multi-resource cache holding unique ownership. Each resource is identified by it's filename.
-- `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling).
-- `menu`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
-- `splitcam`: A splitscreen camera-implementation using sf::View up to four cameras.
+- `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling) as well as range-based iteration in rendering order.
+- `menu`: A light-weight and customizable gui implementation for option-based menus (using pure keyboard/gamepad input).
+- `splitcam`: A splitscreen camera-implementation using sf::View with up to four cameras.
 - `state`: A customizable context-related state machine and application wrapper class.
 - `logger`: Blueprint for a logging mechanism with support for various SFML types.
 
 See `examples/` directory for full (compilable) examples.
 
 **Future plans**
+- Extend `atlas` to shrink images and using customized origins.
 - Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
 - Extend `menu` to provide a text input widget
