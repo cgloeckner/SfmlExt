@@ -17,6 +17,7 @@ This is a small set of features I found useful when writing Games using C++ and 
 - `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling).
 - `menu`: A light-weight and customizable gui implementation for option-based menus (especially with pure keyboard/gamepad input).
 - `splitcam`: A splitscreen camera-implementation using sf::View up to four cameras.
+- `state`: A customizable context-related state machine and application wrapper class.
 
 See `examples/` directory for full (compilable) examples.
 
@@ -25,7 +26,6 @@ See `examples/` directory for full (compilable) examples.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
 - Extend `menu` to provide a text input widget
 - Extend `splitcam` for a generic number of cameras
-- `state`: A customizable context-related state machine.
 - `logger`: A customizable logging mechanism with built-in logging mechanism for SFML types (such as sf::Vector2<T> or others)
 - `loading`: A thread-based progress bar implementation to enable e.g. loading game resource while redrawing the window.
 - `astar`: A customized A-Star-implementation for 2d grids, because typical A-Star on general graphs cannot easily be implemented with `std::priority_queue`.
