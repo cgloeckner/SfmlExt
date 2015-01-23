@@ -23,6 +23,7 @@ This is a small set of features I found useful when writing Games using C++ and 
 See `examples/` directory for full (compilable) examples.
 
 **Future plans**
+- Do more automated testing :)
 - Extend `atlas` to shrink images and using customized origins.
 - Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
