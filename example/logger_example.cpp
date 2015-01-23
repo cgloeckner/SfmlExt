@@ -43,7 +43,7 @@ class MyLogger
 			file.open(filename);
 		}
 		
-		void operator()(std::string const & line) {
+		void operator()(std::string const & line) override {
 			auto prefix = getTimestring();
 			
 			// add the line to file, stdout and our logbuffer
