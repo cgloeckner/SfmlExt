@@ -54,7 +54,7 @@ std::unique_ptr<Resource> DefaultLoader<Resource>::operator()(std::string const 
 
 // loader specialization for sf::Music
 template <>
-std::unique_ptr<sf::Music> DefaultLoader<sf::Music>::operator()(std::string const & fname) {
+inline std::unique_ptr<sf::Music> DefaultLoader<sf::Music>::operator()(std::string const & fname) {
 	std::unique_ptr<sf::Music> resource{new sf::Music{}};
 	if (!resource->openFromFile(fname)) {
 		return nullptr;

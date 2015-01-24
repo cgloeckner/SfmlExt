@@ -23,7 +23,7 @@ bool TilingIterator<M>::operator!=(TilingIterator<M> const & other) const {
 
 // specialization for orthogonal grids
 template <>
-void TilingIterator<GridMode::Orthogonal>::operator++() {
+inline void TilingIterator<GridMode::Orthogonal>::operator++() {
 	// step through (screen) row's cells
 	++current.x;
 	if (current.x > start.x + range.x) {
@@ -36,7 +36,7 @@ void TilingIterator<GridMode::Orthogonal>::operator++() {
 
 // specialization for isometric diamond grids
 template <>
-void TilingIterator<GridMode::IsoDiamond>::operator++() {
+inline void TilingIterator<GridMode::IsoDiamond>::operator++() {
 	// step through (screen) row's cells
 	--current.y;
 	++current.x;
@@ -85,13 +85,13 @@ bool Tiling<M>::isTilePos(sf::Vector2i const & tile_pos) {
 
 // specialization for orthogonal maps
 template<>
-sf::Vector2f Tiling<GridMode::Orthogonal>::toScreen(sf::Vector2f const & world_pos) const {
+inline sf::Vector2f Tiling<GridMode::Orthogonal>::toScreen(sf::Vector2f const & world_pos) const {
 	return {world_pos.x * tile_size.x, world_pos.y * tile_size.y};
 }
 
 // specialization for isometric (diamond) maps
 template<>
-sf::Vector2f Tiling<GridMode::IsoDiamond>::toScreen(sf::Vector2f const & world_pos) const {
+inline sf::Vector2f Tiling<GridMode::IsoDiamond>::toScreen(sf::Vector2f const & world_pos) const {
 	return {
 		(world_pos.x - world_pos.y) * tile_size.x / 2.f,
 		(world_pos.x + world_pos.y) * tile_size.y / 2.f
@@ -100,13 +100,13 @@ sf::Vector2f Tiling<GridMode::IsoDiamond>::toScreen(sf::Vector2f const & world_p
 
 // specialization for orthogonal maps
 template<>
-sf::Vector2f Tiling<GridMode::Orthogonal>::fromScreen(sf::Vector2f const & screen_pos) const {
+inline sf::Vector2f Tiling<GridMode::Orthogonal>::fromScreen(sf::Vector2f const & screen_pos) const {
 	return {screen_pos.x / tile_size.x, screen_pos.y / tile_size.y};
 }
 
 // specialization for isometric (diamond) maps
 template<>
-sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const & screen_pos) const {
+inline sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const & screen_pos) const {
 	return {
 		(screen_pos.x / (tile_size.x / 2.f) + screen_pos.y / (tile_size.y / 2.f)) / 2.f,
 		(screen_pos.y / (tile_size.y / 2.f) - screen_pos.x / (tile_size.x / 2.f)) / 2.f
@@ -115,7 +115,7 @@ sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const & scree
 
 // specialization for orthogonal maps
 template <>
-std::vector<sf::Vector2i> Tiling<GridMode::Orthogonal>::getNeighbors(sf::Vector2i const & tile_pos) const {
+inline std::vector<sf::Vector2i> Tiling<GridMode::Orthogonal>::getNeighbors(sf::Vector2i const & tile_pos) const {
 	std::vector<sf::Vector2i> next;
 	sf::Vector2i pos;
 	next.reserve(8);
@@ -132,7 +132,7 @@ std::vector<sf::Vector2i> Tiling<GridMode::Orthogonal>::getNeighbors(sf::Vector2
 
 // specialization for isometric diamond maps
 template <>
-std::vector<sf::Vector2i> Tiling<GridMode::IsoDiamond>::getNeighbors(sf::Vector2i const & tile_pos) const {
+inline std::vector<sf::Vector2i> Tiling<GridMode::IsoDiamond>::getNeighbors(sf::Vector2i const & tile_pos) const {
 	// note that, isometric diamond is orthogonal in it's model
 	std::vector<sf::Vector2i> next;
 	sf::Vector2i pos;
@@ -150,7 +150,7 @@ std::vector<sf::Vector2i> Tiling<GridMode::IsoDiamond>::getNeighbors(sf::Vector2
 
 // specialization for orthogonal maps
 template <>
-TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const {
+inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -171,7 +171,7 @@ TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const
 
 // specialization for orthogonal maps
 template <>
-TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
+inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -193,7 +193,7 @@ TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
 
 // specialization for isometric (diamond) maps
 template <>
-TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const {
+inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();
@@ -217,7 +217,7 @@ TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const
 
 // specialization for orthogonal maps
 template <>
-TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() const {
+inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() const {
 	assert(camera != nullptr);
 	auto center = fromScreen(camera->getCenter());
 	auto size = camera->getSize();

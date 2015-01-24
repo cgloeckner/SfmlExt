@@ -30,7 +30,7 @@ sf::IntRect Chunk<Key>::getClipping() const {
 // ---------------------------------------------------------------------------
 
 template <>
-std::string ImageAtlas<std::string>::keyToString(std::string const & key) {
+inline std::string ImageAtlas<std::string>::keyToString(std::string const & key) {
 	return key;
 }
 
