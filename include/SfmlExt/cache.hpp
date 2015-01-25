@@ -55,7 +55,7 @@ class Cache {
 		 * @return true if resource was found inside cache
 		 */
 		template <typename Resource>
-		bool has(std::string const & fname);
+		bool has(std::string const & fname) const;
 		
 		/// Return all existing keys of a given resource type
 		/**

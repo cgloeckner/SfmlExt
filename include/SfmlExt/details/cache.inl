@@ -101,7 +101,7 @@ Resource& Cache::get(std::string const & fname) {
 }
 
 template <typename Resource>
-bool Cache::has(std::string const & fname) {
+bool Cache::has(std::string const & fname) const {
 	// search subcache
 	auto index = std::type_index(typeid(Resource));
 	auto i = subcaches.find(index);
