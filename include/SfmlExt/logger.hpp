@@ -7,6 +7,9 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Window/Joystick.hpp>
 
 namespace sfext {
 

@@ -68,9 +68,9 @@ class Tiling {
 		/// Current camera view
 		sf::View const * camera;
 		/// Number of tiles per map dimension
-		sf::Vector2u const & map_size;
+		sf::Vector2u const map_size;
 		/// Number of pixels per tile graphics' dimension
-		sf::Vector2f const & tile_size;
+		sf::Vector2f const tile_size;
 		
 	public:
 		/// Create a new tiling for a fixed map size and tile size
