@@ -36,9 +36,6 @@ class Application {
 		/// RenderWindow handled by the state
 		sf::RenderWindow window;
 		
-		/// Estimated time per frame
-		sf::Time frametime;
-		
 		/// Context to use
 		Context& context;
 		
@@ -54,11 +51,10 @@ class Application {
 		 * The render window is completly handled by the application. The
 		 * variable set of arguments is forwarded to the window's ctor.
 		 * @param context reference to use as context
-		 * @param framelimit to determine the mainloop's maximum speed
 		 * @param args... multiple arguments forwarded to window's ctor
 		 */
 		template <typename ...Args>
-		Application(Context& context, float framelimit, Args&&... args);
+		Application(Context& context, Args&&... args);
 		
 		/// Create and push a new state as pending
 		/**

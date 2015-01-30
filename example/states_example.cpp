@@ -90,7 +90,8 @@ int main() {
 	MyContext context;
 	
 	// create application (which creates a window and obtains the context)
-	sfext::Application<MyContext> app{context, 30, sf::VideoMode(640, 480), "states example"};
+	sfext::Application<MyContext> app{context, sf::VideoMode(640, 480), "states example"};
+	app.getWindow().setVerticalSyncEnabled(true);
 	
 	// use DemoState as initial state (drawing a red rectangle)
 	app.push<DemoState>(sf::Color::Red);

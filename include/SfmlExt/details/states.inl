@@ -2,13 +2,11 @@ namespace sfext {
 
 template <typename Context>
 template <typename ...Args>
-Application<Context>::Application(Context& context, float framelimit, Args&&... args)
+Application<Context>::Application(Context& context, Args&&... args)
 	: window{std::forward<Args>(args)...}
-	, frametime{sf::milliseconds(1000 / framelimit)}
 	, context{context}
 	, pending{nullptr}
 	, states{} {
-	window.setFramerateLimit(framelimit);
 }
 
 template <typename Context>
@@ -51,7 +49,7 @@ void Application<Context>::run() {
 			continue;
 		}
 		
-		// update framerate
+		// update framerate counter
 		++frames;
 		auto elapsed = clock.restart();
 		time += elapsed.asMilliseconds();
@@ -62,14 +60,7 @@ void Application<Context>::run() {
 		}
 		
 		// update state
-		if (elapsed < frametime) {
-			current.update(elapsed);
-		} else {
-			while (elapsed >= frametime) {
-				elapsed -= frametime;
-				current.update(frametime);
-			}
-		}
+		current.update(elapsed);
 		
 		// render state
 		window.clear(sf::Color::Black);
