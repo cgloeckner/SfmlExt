@@ -11,21 +11,12 @@ using AtlasData = std::map<std::string, sf::IntRect>;
 // just a helper (see below)
 AtlasData create_atlas() {
 	// Load images from disk and append to the atlas
-	// note: the atlas itself doesn't hold images, but non-owning pointers
-	//		so here the images are stored in a std::vector
-	//		to avoid rearrangment of elements while push_back, we resize the
-	//		container at the beginning, so the five images already exist
-	//		and pointers to those images (as used inside the atlas!) are
-	//		not invalidated!
-	//	brief: all added images must stay at their memory addresses until
-	//		the atlas finished genertion
-	std::vector<sf::Image> images;
 	sfext::ImageAtlas<std::string> atlas;
-	images.resize(5);
 	for (auto i = 0u; i < 5u; ++i) {
+		sf::Image img;
 		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
-		images.at(i).loadFromFile(fname);
-		atlas.add(fname, images.at(i));
+		img.loadFromFile(fname);
+		atlas.add(fname, std::move(img));
 	}
 	
 	// Generate atlas image

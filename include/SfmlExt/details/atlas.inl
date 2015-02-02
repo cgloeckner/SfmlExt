@@ -8,9 +8,9 @@
 namespace sfext {
 
 template <typename Key>
-Chunk<Key>::Chunk(Key const & key, sf::Image const & image)
+Chunk<Key>::Chunk(Key const & key, sf::Image&& img)
 	: key{key}
-	, image{&image}
+	, image{img}
 	, range{
 		0, 0, static_cast<int>(image.getSize().x),
 		static_cast<int>(image.getSize().y)
@@ -40,8 +40,8 @@ std::string ImageAtlas<Key>::keyToString(Key const & key) {
 }
 
 template <typename Key>
-void ImageAtlas<Key>::add(Key const & key, sf::Image const & image) {
-	chunks.emplace_back(key, image);
+void ImageAtlas<Key>::add(Key const & key, sf::Image&& image) {
+	chunks.emplace_back(key, std::move(image));
 }
 
 template <typename Key>
@@ -123,7 +123,7 @@ sf::Image ImageAtlas<Key>::generate(std::size_t size) {
 	sf::Image image;
 	image.create(size, size, sf::Color::Transparent);
 	for (auto const & chunk: chunks) {
-		image.copy(*chunk.image, chunk.range.left, chunk.range.top);
+		image.copy(chunk.image, chunk.range.left, chunk.range.top);
 	}
 
 	return std::move(image);

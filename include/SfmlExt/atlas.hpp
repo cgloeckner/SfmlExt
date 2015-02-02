@@ -15,16 +15,16 @@ class Chunk final {
 	
 	private:
 		Key key;
-		sf::Image const * image; // reference would delete copy assignment op.
+		sf::Image image;
 		sf::IntRect range; // describes position inside atlas
 		
 	public:
 		/// Create a chunk
 		/**
 		 * @param key to identify the image with
-		 * @param image to reference at
+		 * @param image to use
 		 */
-		Chunk(Key const & key, sf::Image const & image);
+		Chunk(Key const & key, sf::Image&& image);
 		
 		/// Returns key
 		/**
@@ -63,12 +63,12 @@ class ImageAtlas final {
 	public:
 		/// Try to add an image
 		/**
-		 * Creates a new chunk with `key` and a pointer to the given `image` lreference.
+		 * Creates a new chunk with `key` and a pointer to the given `image`.
 		 * This always succeeds because the atlas itself is not generated here
 		 * @param key used to identify the image
-		 * @param image should be added to the atlas
+		 * @param image should be moved to the atlas
 		 */
-		void add(Key const & key, sf::Image const & image);
+		void add(Key const & key, sf::Image&& image);
 		
 		/// Clears the entire atlas
 		void clear();
