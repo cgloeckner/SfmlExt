@@ -1,103 +1,98 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Rect.hpp>
 
 namespace sfext {
 
 template <typename Key>
-class ImageAtlas;
+class AtlasGenerator;
 
 /// Frame Chunk
 template <typename Key>
-class Chunk final {
-	friend class ImageAtlas<Key>;
-	
-	private:
-		Key key;
-		sf::Image image;
-		sf::IntRect range; // describes position inside atlas
+struct Chunk final {
+	Key key;
+	sf::Image image;
+	sf::IntRect bounds; // describe image rectangle (changed if shrinked)
+	sf::IntRect target; // describes position inside atlas
+	sf::Vector2f origin; // image's origin (changed if shrinked)
 		
-	public:
-		/// Create a chunk
-		/**
-		 * @param key to identify the image with
-		 * @param image to use
-		 */
-		Chunk(Key const & key, sf::Image&& image);
-		
-		/// Returns key
-		/**
-		 * @return key to uniquely identify this chunk
-		 */
-		Key getKey() const;
-		
-		/// Returns clipping information
-		/**
-		 * @return clipping rectangle referring to the atlas image
-		 */
-		sf::IntRect getClipping() const;
+	/// Create a chunk
+	/**
+	 * @param key to identify the image with
+	 * @param image to use
+	 * @param bounds describing the image's source rectangle
+	 * @param origin describing the render origin for e.g. sf::Sprite
+	 */
+	Chunk(Key const & key, sf::Image&& image, sf::IntRect const & bounds, sf::Vector2f const & origin);
 };
+
+struct AtlasFrame {
+	sf::IntRect clipping;
+	sf::Vector2f origin;
+};
+
+template <typename Key, typename HashFunc=std::hash<Key>>
+struct Atlas {
+	sf::Image image;
+	std::unordered_map<Key, AtlasFrame, HashFunc> frames;
+};
+
+// ---------------------------------------------------------------------------
 
 /// Image Atlas Generator
 /**
  * It generates an atlas of multiple images. Each image is identified by a key,
  * which type is templated here as `Key`.
- * Typical usage: add multiple images, generate the atlas image and iterate the
- * atlas object to fetch all frames' clipping information.
- * A given `Key` is only valid if `std::hash<Key>` and `std::equal_to<Key>`
- * exist in order to use it as key of `std::unordered_map`. It also should be
- * convertable to string by `std::to_string` (or being string itself).
+ * Typical usage: add multiple images and generate the atlas image to obtain
+ * the final image and each frame's information.
+ * Each frame is strinked to it's minimum size. The provided origin will be
+ * modified in order to enable exact rendering later on.
  */
 template <typename Key>
-class ImageAtlas final {
+class AtlasGenerator final {
 	private:
-		using ChunkArray	= typename std::vector<Chunk<Key>>;
-		using Iterator		= typename ChunkArray::const_iterator;
-
-		ChunkArray chunks; // added chunks
+		std::vector<Chunk<Key>> chunks; // added chunks
 		
-		/// Converts a key to a string (for throwing an exception)
-		std::string keyToString(Key const & key);
-
+		/// Check whether a row only holds transparent pixels
+		bool rowIsEmpty(sf::Image const & image, std::size_t row);
+		
+		/// Check whether a column only holds transparent pixels
+		bool colIsEmpty(sf::Image const & image, std::size_t col);
+		
 	public:
 		/// Try to add an image
 		/**
-		 * Creates a new chunk with `key` and a pointer to the given `image`.
-		 * This always succeeds because the atlas itself is not generated here
+		 * Creates a new chunk with `key` and the given `image`. The image
+		 * is shrinked to it's minimum size. This modifies the `origin` for
+		 * rendering with e.g. sf::Sprite.
+		 * This always succeeds because the atlas itself is not generated here.
 		 * @param key used to identify the image
 		 * @param image should be moved to the atlas
+		 * @param origin for the original image
 		 */
-		void add(Key const & key, sf::Image&& image);
+		void add(Key const & key, sf::Image&& image, sf::Vector2f origin);
 		
 		/// Clears the entire atlas
 		void clear();
 		
 		/// Generate the final image
 		/**
-		 * Generates the actual atlas image. This method provides an additional overload.
-		 * When using this, the size of the target image can be specified. If it is not
-		 * specified, it will use `sf::Texture::getMaximumSize()` as default.
+		 * Generates the actual atlas image. To increase performance, specify
+		 * `min_step` in order to increase the minimum step range for searching
+		 * a free location. Using min_step greater (1,1) will increase exection
+		 * speed but the result won't be perfect anymore.
+		 * The `HashFunc` argument is unsed in order to arrange all frames
+		 * inside an `std::unordered_map`.
 		 * @throw std::length_error if an image is larger than the target
-		 * @throw std::out_of_range if the target is too small to carry all images
+		 * @param min_step determines the minimum step range for searching a free spot
 		 * @param size determines the target image's size per dimension.
-		 * @return image object containing all added images
+		 * @param [out] atlas which is generated
+		 * @return true if success, false if not all images could be placed.
 		 */
-		sf::Image generate();
-		sf::Image generate(std::size_t size);
-		
-		/// Returns beginning of the chunks
-		/**
-		 * Returns an iterator to a constant chunk. @See ImageAtlas::Chunk
-		 * @return iterator to beginning of chunks
-		 */
-		Iterator begin() const;
-		
-		/// Returns end of the chunks
-		/**
-		 * @return iterator to end of chunks
-		 */
-		Iterator end() const;
+		template <typename HashFunc=std::hash<Key>>
+		bool generate(sf::Vector2u const & min_step, std::size_t size, Atlas<Key, HashFunc>& atlas);
 };
 
 } // ::sfext

@@ -1,48 +1,41 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <Thor/Animation.hpp>
+#include <Thor/Animations.hpp>
+// Note that a Thor-fork is used in order to apply an origin to a sprite
 
 #include <SfmlExt/atlas.hpp>
 
-// clipping data per frame
-using AtlasData = std::map<std::string, sf::IntRect>;
-
 // just a helper (see below)
-AtlasData create_atlas() {
-	// Load images from disk and append to the atlas
-	sfext::ImageAtlas<std::string> atlas;
+bool create_atlas(sfext::Atlas<std::string>& atlas) {
+	// Load images from disk and append to the atlas with an origin
+	sfext::AtlasGenerator<std::string> builder;
 	for (auto i = 0u; i < 5u; ++i) {
 		sf::Image img;
 		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
 		img.loadFromFile(fname);
-		atlas.add(fname, std::move(img));
+		builder.add(fname, std::move(img), {36.f, 48.f});
 	}
 	
 	// Generate atlas image
-	auto target = atlas.generate(256); // limit target image to 256x256
-	target.saveToFile("atlas.png");
-	
-	// Export all clippingdata to a user-defined structure
-	// here: simple lookup-table
-	AtlasData lookup;
-	for (auto const & chunk: atlas) {
-		lookup[chunk.getKey()] = chunk.getClipping();
-	}
-	return std::move(lookup);
+	return builder.generate({16u, 16u}, 256, atlas);
 }
 
 int main() {
 	// create atlas from images (see above)
-	// alternative: load clipping data from a file
-	auto clipping = create_atlas();
-	// now we have a "atlas.png" and our clipping information
+	sfext::Atlas<std::string> atlas;
+	if (!create_atlas(atlas)) {
+		std::cout << "Building failed!" << std::endl;
+		return 0;
+	}
+	atlas.image.saveToFile("atlas.png");
+	// now we have a "atlas.png" and our clipping information (= atlas.frames)
 
 	// Create Animation -- works just as normal (using SFML and Thor)
 	thor::FrameAnimation attack;
 	for (auto i = 0u; i < 5u; ++i) {
 		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
-		attack.addFrame(1.f, clipping[fname]);
+		attack.addFrame(1.f, atlas.frames[fname].clipping, atlas.frames[fname].origin);
 	}
 	thor::Animator<sf::Sprite, std::string> animator;
 	animator.addAnimation("attack", attack, sf::milliseconds(625)); // 5x 125ms
@@ -52,6 +45,7 @@ int main() {
 	frameset.loadFromFile("atlas.png"); // <-- file was created by atlas
 	sf::Sprite sprite;
 	sprite.setTexture(frameset);
+	sprite.setPosition({160, 120});
 
 	// Render!
 	sf::RenderWindow window{{320, 240}, "Animation example"};
