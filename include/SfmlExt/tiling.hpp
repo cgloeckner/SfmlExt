@@ -89,6 +89,11 @@ class Tiling {
 		void setView(sf::View const & cam);
 		
 		/// Set the tile size
+		/**
+		 * To use the tiling object in the context of another map, the tile
+		 * size can be modified during runtime.
+		 * @param tsize The new tile size to use
+		 */
 		void setTileSize(sf::Vector2f const & tsize);
 		
 		/// Returns whether the tiling uses a camera, yet
