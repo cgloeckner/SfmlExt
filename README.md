@@ -25,7 +25,7 @@ See `examples/` directory for full (compilable) examples.
 Some features depend on the Thor Library. But `atlas` provides also setting an origin for a frame, e.g. when using `sf::Sprite`. Because this isn't supported by Thor, yet, the example code for `atlas` depends on a folk of Thor. The commit can be found here: https://github.com/cgloeckner/Thor/commit/7bd9d4a63947958a00691eae67da5a5378b1b343
 
 **Future plans**
-- Do more automated testing :)
+- (re)write unit testing
 - Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
 - Extend `menu` to provide a text input widget
