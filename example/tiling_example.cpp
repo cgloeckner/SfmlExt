@@ -5,8 +5,8 @@
 
 int main() {
 	// Create tilings
-	sfext::Tiling<sfext::GridMode::Orthogonal> ortho_tiling{{25, 25}, {64.f, 64.f}};
-	sfext::Tiling<sfext::GridMode::IsoDiamond> iso_tiling{{25, 25}, {64.f, 32.f}};
+	sfext::Tiling<sfext::GridMode::Orthogonal> ortho_tiling{{64.f, 64.f}};
+	sfext::Tiling<sfext::GridMode::IsoDiamond> iso_tiling{{64.f, 32.f}};
 
 	// Prepare window and camera
 	int const width = 640;
@@ -16,26 +16,17 @@ int main() {
 	
 	ortho_cam.setSize({width, height/2});
 	ortho_cam.setViewport({0.f, 0.f, 1.f, 0.5f});
-	ortho_tiling.setCamera(ortho_cam);
+	ortho_tiling.setView(ortho_cam);
 	
 	iso_cam.setSize({width, height/2});
 	iso_cam.setViewport({0.f, 0.5f, 1.f, 0.5f});
-	iso_tiling.setCamera(iso_cam);
-	
-	// Prepare font
-	sf::Font font;
-	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
-	sf::Text label;
-	label.setFont(font);
-	label.setCharacterSize(12u);
+	iso_tiling.setView(iso_cam);
 	
 	// Prepare tileset
 	sf::Texture tileset;
 	sf::Sprite tile;
 	tileset.loadFromFile("data/tileset.png");
 	tile.setTexture(tileset);
-	
-	iso_tiling.getNeighbors({0, 0});
 	
 	while (window.isOpen()) {
 		sf::Event event;
@@ -61,23 +52,11 @@ int main() {
 		tile.setTextureRect({0, 0, 64, 64});
 		tile.setOrigin({32.f, 32.f});
 		for (auto const & tile_pos: ortho_tiling) {
-			if (ortho_tiling.isTilePos(tile_pos)) {
+			if (tile_pos.x >= 0 && tile_pos.y >= 0 && tile_pos.x < 32 && tile_pos.y < 32) {
 				auto spos = ortho_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
 				// render tile
 				tile.setPosition(spos);
 				window.draw(tile);
-			}
-		}
-		for (auto const & tile_pos: ortho_tiling) {
-			if (ortho_tiling.isTilePos(tile_pos)) {
-				auto spos = ortho_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
-				// render position label
-				label.setString("[" + std::to_string(tile_pos.x) + "|"
-					+ std::to_string(tile_pos.y) + "]");
-				auto rect = label.getLocalBounds();
-				label.setOrigin({rect.left + rect.width / 2.f, rect.top + rect.height/2.f});
-				label.setPosition(spos);
-				window.draw(label);
 			}
 		}
 		
@@ -86,23 +65,11 @@ int main() {
 		tile.setTextureRect({64, 0, 64, 32});
 		tile.setOrigin({32.f, 16.f});
 		for (auto const & tile_pos: iso_tiling) {
-			if (iso_tiling.isTilePos(tile_pos)) {
+			if (tile_pos.x >= 0 && tile_pos.y >= 0 && tile_pos.x < 32 && tile_pos.y < 32) {
 				auto spos = iso_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
 				// render tile
 				tile.setPosition(spos);
 				window.draw(tile);
-			}
-		}
-		for (auto const & tile_pos: iso_tiling) {
-			if (iso_tiling.isTilePos(tile_pos)) {
-				auto spos = iso_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
-				// render position label
-				label.setString("[" + std::to_string(tile_pos.x) + "|"
-					+ std::to_string(tile_pos.y) + "]");
-				auto rect = label.getLocalBounds();
-				label.setOrigin({rect.left + rect.width / 2.f, rect.top + rect.height/2.f});
-				label.setPosition(spos);
-				window.draw(label);
 			}
 		}
 		

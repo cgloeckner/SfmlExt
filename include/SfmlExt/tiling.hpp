@@ -17,7 +17,7 @@ class TilingIterator {
 	private:
 		sf::Vector2i current, start, range;
 		unsigned int count; // counting colums per row (iso diamond only)
-				
+		
 	public:
 		/// Create a new iterator with a start and an iteration rage.
 		/**
@@ -66,11 +66,9 @@ template <GridMode M>
 class Tiling {
 	private:
 		/// Current camera view
-		sf::View const * camera;
-		/// Number of tiles per map dimension
-		sf::Vector2u const map_size;
+		sf::View const * view;
 		/// Number of pixels per tile graphics' dimension
-		sf::Vector2f const tile_size;
+		sf::Vector2f tile_size;
 		
 	public:
 		/// Create a new tiling for a fixed map size and tile size
@@ -78,7 +76,7 @@ class Tiling {
 		 * @param map_size number of tiles per map dimension
 		 * @param tile_size number of pixels per tile graphics' dimension
 		 */
-		Tiling(sf::Vector2u const & map_size, sf::Vector2f const & tile_size);
+		Tiling(sf::Vector2f const & tile_size);
 		
 		/// Set the current camera's view
 		/**
@@ -86,9 +84,12 @@ class Tiling {
 		 * set a sf::View as a camera. The camera can be changed during the
 		 * runtime of the tiling object to enable e.g. splitscreen rendering
 		 * with only one instance of Tiling.
-		 * @param camera The view which describes the camera
+		 * @param cam The view which describes the camera
 		 */
-		void setCamera(sf::View const & camera);
+		void setView(sf::View const & cam);
+		
+		/// Set the tile size
+		void setTileSize(sf::Vector2f const & tsize);
 		
 		/// Returns whether the tiling uses a camera, yet
 		/**
@@ -96,15 +97,7 @@ class Tiling {
 		 * check whether a camera was set.
 		 * @return true if a camera is set
 		 */
-		bool hasCamera() const;
-		
-		/// Checks whether a tile position is valid referring to map size
-		/**
-		 * A position is valid if it is located within the map boundary
-		 * @param tile_pos Tile position to check whether it is valid
-		 * @return true if tile position is valid
-		 */
-		bool isTilePos(sf::Vector2i const & tile_pos);
+		bool hasView() const;
 		
 		/// Converts a world position to a screen position
 		/**
@@ -127,17 +120,6 @@ class Tiling {
 		 * @return Result of the position transformation.
 		 */
 		sf::Vector2f fromScreen(sf::Vector2f const & screen_pos) const;
-		
-		/// Returns an array of tile positions next to the given position
-		/**
-		 * The returned tile position are not automatically valid! Neigher the
-		 * given tile position is checked to be valid. You might need to check
-		 * it using `isTilePos()`. The calculation of neighbors depends on the
-		 * actual `GridMode`.
-		 * @param tile_pos Tile position used as origin
-		 * @return array of tile positions located next to tile_pos
-		 */
-		std::vector<sf::Vector2i> getNeighbors(sf::Vector2i const & tile_pos) const;
 		
 		/// Returns iterator to first tile position in range
 		/**
