@@ -5,7 +5,7 @@
 namespace sfext {
 
 template <GridMode M>
-TilingIterator<M>::TilingIterator(sf::Vector2u const & start, sf::Vector2u const & range)
+TilingIterator<M>::TilingIterator(sf::Vector2i const & start, sf::Vector2i const & range)
 	: start{start}
 	, range{range}
 	, current{start}
@@ -13,8 +13,8 @@ TilingIterator<M>::TilingIterator(sf::Vector2u const & start, sf::Vector2u const
 }
 
 template <GridMode M>
-sf::Vector2u const & TilingIterator<M>::operator*() const {
-	return current;
+sf::Vector2u TilingIterator<M>::operator*() const {
+	return sf::Vector2u{current};
 }
 
 template <GridMode M>
@@ -55,7 +55,7 @@ inline void TilingIterator<GridMode::IsoDiamond>::operator++() {
 }
 
 template <GridMode M>
-sf::Vector2u TilingIterator<M>::getRange() const {
+sf::Vector2i TilingIterator<M>::getRange() const {
 	return range;
 }
 
@@ -123,7 +123,7 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin(
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2u topleft, range;
+	sf::Vector2i topleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
@@ -144,7 +144,7 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() 
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2u bottomleft, range;
+	sf::Vector2i bottomleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
@@ -166,7 +166,7 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin(
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2u topleft, range;
+	sf::Vector2i topleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
@@ -190,7 +190,7 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() 
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2u bottomleft, range;
+	sf::Vector2i bottomleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
