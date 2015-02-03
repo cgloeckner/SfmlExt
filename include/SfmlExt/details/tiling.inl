@@ -5,15 +5,15 @@
 namespace sfext {
 
 template <GridMode M>
-TilingIterator<M>::TilingIterator(sf::Vector2i const & start, sf::Vector2i const & range)
-	: current{start}
-	, start{start}
+TilingIterator<M>::TilingIterator(sf::Vector2u const & start, sf::Vector2u const & range)
+	: start{start}
 	, range{range}
+	, current{start}
 	, count{0u} {
 }
 
 template <GridMode M>
-sf::Vector2i const & TilingIterator<M>::operator*() const {
+sf::Vector2u const & TilingIterator<M>::operator*() const {
 	return current;
 }
 
@@ -44,7 +44,7 @@ inline void TilingIterator<GridMode::IsoDiamond>::operator++() {
 	++count;
 	if (count > range.x) {
 		// go to next screen row --> zigzag
-		if ((current.x + current.y) % 2 == 0) {
+		if ((current.x + current.y) % 2 == 0u) {
 			++start.y;
 		} else {
 			++start.x;
@@ -55,7 +55,7 @@ inline void TilingIterator<GridMode::IsoDiamond>::operator++() {
 }
 
 template <GridMode M>
-sf::Vector2i TilingIterator<M>::getRange() const {
+sf::Vector2u TilingIterator<M>::getRange() const {
 	return range;
 }
 
@@ -118,16 +118,16 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin(
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2i topleft, range;
+	sf::Vector2u topleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
-	range.x = static_cast<int>(std::ceil(size.x / tile_size.x)) + 2;
-	range.y = static_cast<int>(std::ceil(size.y / tile_size.y)) + 2;
+	range.x = static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2;
+	range.y = static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2;
 	// calculate topleft
 	// x - width / 2 & y - height / 2 : go to topleft corner
-	topleft.x = static_cast<int>(center.x - std::ceil(range.x / 2.f));
-	topleft.y = static_cast<int>(center.y - std::ceil(range.y / 2.f));
+	topleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
+	topleft.y = static_cast<unsigned int>(center.y - std::ceil(range.y / 2.f));
 	
 	// create iterator
 	return {topleft, range};
@@ -139,17 +139,17 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() 
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2i bottomleft, range;
+	sf::Vector2u bottomleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
-	range.x = static_cast<int>(std::ceil(size.x / tile_size.x)) + 2;
-	range.y = static_cast<int>(std::ceil(size.y / tile_size.y)) + 2;
+	range.x = static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2;
+	range.y = static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2;
 	// calculate topleft
 	// x - width / 2 & y + height / 2 : go to bottom left corner
 	// y + 1 : next line (1st line which isn't iterated anymore)
-	bottomleft.x = static_cast<int>(center.x - std::ceil(range.x / 2.f));
-	bottomleft.y = static_cast<int>(center.y + std::ceil(range.y / 2.f)) + 1;
+	bottomleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
+	bottomleft.y = static_cast<unsigned int>(center.y + std::ceil(range.y / 2.f)) + 1;
 	
 	// create iterator
 	return {bottomleft, range};
@@ -161,19 +161,19 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin(
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2i topleft, range;
+	sf::Vector2u topleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
 	// size + 2 : because topleft starts 2 rows above (see topleft calc)
 	// height x 2 : because of vertical zig-zag
-	range.x =  static_cast<int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
-	range.y = (static_cast<int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
+	range.x =  static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
+	range.y = (static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
 	// calculate topleft
 	// x - width : go to topleft corner
 	// x - 2 & y - 2 : because tile might be rendered centered (else: gap at top), vertical zigzag -> x2
-	topleft.x = static_cast<int>(center.x) - range.x - 2;
-	topleft.y = static_cast<int>(center.y) - 2;
+	topleft.x = static_cast<unsigned int>(center.x) - range.x - 2;
+	topleft.y = static_cast<unsigned int>(center.y) - 2;
 	
 	// create iterator
 	return {topleft, range};
@@ -185,18 +185,18 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() 
 	assert(view != nullptr);
 	auto center = fromScreen(view->getCenter());
 	auto size = view->getSize();
-	sf::Vector2i bottomleft, range;
+	sf::Vector2u bottomleft, range;
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
 	// size + 2 : because topleft starts 2 rows above (see topleft calc)
 	// height x 2 : because of vertical zig-zag
-	range.x =  static_cast<int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
-	range.y = (static_cast<int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
+	range.x =  static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
+	range.y = (static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
 	// calculate topleft
 	// x - width + height / 2 & y + height / 2 : go to bottomleft corner
-	bottomleft.x = static_cast<int>(center.x) - range.x + range.y / 2;
-	bottomleft.y = static_cast<int>(center.y) + range.y / 2;
+	bottomleft.x = static_cast<unsigned int>(center.x) - range.x + range.y / 2;
+	bottomleft.y = static_cast<unsigned int>(center.y) + range.y / 2;
 	
 	// create iterator
 	return {bottomleft, range};

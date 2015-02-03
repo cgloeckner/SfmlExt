@@ -52,7 +52,7 @@ int main() {
 		tile.setTextureRect({0, 0, 64, 64});
 		tile.setOrigin({32.f, 32.f});
 		for (auto const & tile_pos: ortho_tiling) {
-			if (tile_pos.x >= 0 && tile_pos.y >= 0 && tile_pos.x < 32 && tile_pos.y < 32) {
+			if (tile_pos.x < 32 && tile_pos.y < 32) {
 				auto spos = ortho_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
 				// render tile
 				tile.setPosition(spos);
@@ -65,7 +65,7 @@ int main() {
 		tile.setTextureRect({64, 0, 64, 32});
 		tile.setOrigin({32.f, 16.f});
 		for (auto const & tile_pos: iso_tiling) {
-			if (tile_pos.x >= 0 && tile_pos.y >= 0 && tile_pos.x < 32 && tile_pos.y < 32) {
+			if (tile_pos.x < 32 && tile_pos.y < 32) {
 				auto spos = iso_tiling.toScreen(static_cast<sf::Vector2f>(tile_pos));
 				// render tile
 				tile.setPosition(spos);

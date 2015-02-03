@@ -15,7 +15,7 @@ enum class GridMode {
 template <GridMode M>
 class TilingIterator {
 	private:
-		sf::Vector2i current, start, range;
+		sf::Vector2u start, range, current;
 		unsigned int count; // counting colums per row (iso diamond only)
 		
 	public:
@@ -24,13 +24,13 @@ class TilingIterator {
 		 * @param start Tile position used as topleft starting position
 		 * @param range Number of rows and columns to iterate over
 		 */
-		TilingIterator(sf::Vector2i const & start, sf::Vector2i const & range);
+		TilingIterator(sf::Vector2u const & start, sf::Vector2u const & range);
 		
 		/// Returns the current tile position
 		/**
 		 * @return Tile position which the iterator is indicating at
 		 */
-		sf::Vector2i const & operator*() const;
+		sf::Vector2u const & operator*() const;
 				
 		/// Used to compare two iterators
 		/**
@@ -52,7 +52,7 @@ class TilingIterator {
 		/**
 		 * @return range (as given in ctor)
 		 */
-		sf::Vector2i getRange() const;
+		sf::Vector2u getRange() const;
 };
 
 /// Provides several tiling functionality depending on the actual grid mode
