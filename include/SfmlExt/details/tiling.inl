@@ -78,6 +78,11 @@ void Tiling<M>::setTileSize(sf::Vector2f const & tsize) {
 }
 
 template <GridMode M>
+sf::Vector2f Tiling<M>::getTileSize() const {
+	return tile_size;
+}
+
+template <GridMode M>
 bool Tiling<M>::hasView() const {
 	return (view != nullptr);
 }

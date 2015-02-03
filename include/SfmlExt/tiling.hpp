@@ -96,6 +96,12 @@ class Tiling {
 		 */
 		void setTileSize(sf::Vector2f const & tsize);
 		
+		/// Get the current tile size
+		/**
+		 * @return tile size which is currently set
+		 */
+		sf::Vector2f getTileSize() const;
+		
 		/// Returns whether the tiling uses a camera, yet
 		/**
 		 * Some operations require a camera to be set. This method is used to
