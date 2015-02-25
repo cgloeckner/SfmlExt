@@ -22,7 +22,7 @@ template <typename Key>
 bool AtlasGenerator<Key>::rowIsEmpty(sf::Image const & image, std::size_t row) {
 	auto size = image.getSize();
 	for (std::size_t x = 0u; x < size.x; ++x) {
-		if (image.getPixel(x, row) != sf::Color::Transparent) {
+		if (image.getPixel(x, row).a > 0) {
 			return false;
 		}
 	}
@@ -33,7 +33,7 @@ template <typename Key>
 bool AtlasGenerator<Key>::colIsEmpty(sf::Image const & image, std::size_t col) {
 	auto size = image.getSize();
 	for (std::size_t y = 0u; y < size.y; ++y) {
-		if (image.getPixel(col, y) != sf::Color::Transparent) {
+		if (image.getPixel(col, y).a > 0) {
 			return false;
 		}
 	}
@@ -43,29 +43,27 @@ bool AtlasGenerator<Key>::colIsEmpty(sf::Image const & image, std::size_t col) {
 template <typename Key>
 void AtlasGenerator<Key>::add(Key const & key, sf::Image&& image, sf::Vector2f origin) {
 	auto size = sf::Vector2i{image.getSize()};
-	sf::IntRect bounds{{0, 0}, size};
+	sf::IntRect bounds{{0u, 0u}, size};
 	
+	// shrink from bottom
+	while (rowIsEmpty(image, bounds.height - 2u)) {
+		--bounds.height;
+	}
+	// shrink from right
+	while (colIsEmpty(image, bounds.width - 2u)) {
+		--bounds.width;
+	}
 	// shrink from top
-	while (rowIsEmpty(image, bounds.top)) {
+	while (rowIsEmpty(image, bounds.top + 1u)) {
 		++bounds.top;
 		--bounds.height;
 		--origin.y;
 	}
 	// shrink from left
-	while (colIsEmpty(image, bounds.left)) {
+	while (colIsEmpty(image, bounds.left + 1u)) {
 		++bounds.left;
 		--bounds.width;
 		--origin.x;
-	}
-	// shrink from bottom
-	while (rowIsEmpty(image, bounds.top + bounds.height - 1)) {
-		--bounds.height;
-		origin.y -= 0.5f;
-	}
-	// shrink from right
-	while (rowIsEmpty(image, bounds.left + bounds.width - 1)) {
-		--bounds.width;
-		origin.x -= 0.5f;
 	}
 	
 	// create chunk
@@ -101,7 +99,7 @@ bool AtlasGenerator<Key>::generate(sf::Vector2u const & min_step, std::size_t si
 			step_range.x = chunk.bounds.width;
 			step_range.y = chunk.bounds.height;
 			// placed at (0,0)
-			lookup[chunk.key] = &chunk;
+			lookup[chunk.key] = &chunk;			
 			continue;
 		}
 
