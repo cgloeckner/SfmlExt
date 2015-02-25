@@ -110,6 +110,12 @@ class Tiling {
 		 */
 		bool hasView() const;
 		
+		/// Determine number of tiles without iterating them
+		/**
+		 * @return number of tiles per dimension
+		 */
+		sf::Vector2u getRange() const;
+		
 		/// Converts a world position to a screen position
 		/**
 		 * A world position is assumed to be in the same scale as a tile
