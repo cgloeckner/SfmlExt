@@ -26,8 +26,6 @@ Some features depend on the Thor Library. But `atlas` provides also setting an o
 
 **Future plans**
 - (re)write unit testing
-- Extend `cache` to handle sf::Shader.
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
 - Extend `menu` to provide a text input widget
-- `loading`: A thread-based progress bar implementation to enable e.g. loading game resource while redrawing the window.
 - `astar`: A customized A-Star-implementation for 2d grids, because typical A-Star on general graphs cannot easily be implemented with `std::priority_queue`.
