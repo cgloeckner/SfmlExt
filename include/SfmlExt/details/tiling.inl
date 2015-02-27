@@ -64,7 +64,8 @@ sf::Vector2i TilingIterator<M>::getRange() const {
 template <GridMode M>
 Tiling<M>::Tiling(sf::Vector2f const & tile_size)
 	: view{nullptr}
-	, tile_size{tile_size} {
+	, tile_size{tile_size}
+	, padding{0u, 0u} {
 }
 
 template <GridMode M>
@@ -75,6 +76,11 @@ void Tiling<M>::setView(sf::View const & cam) {
 template <GridMode M>
 void Tiling<M>::setTileSize(sf::Vector2f const & tsize) {
 	tile_size = tsize;
+}
+
+template <GridMode M>
+void Tiling<M>::setPadding(sf::Vector2u const & pad) {
+	padding = pad;
 }
 
 template <GridMode M>
@@ -97,6 +103,9 @@ inline sf::Vector2u Tiling<GridMode::Orthogonal>::getRange() const {
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
 	range.x = static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2;
 	range.y = static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2;
+	
+	// apply padding
+	range += padding * 2u;
 	
 	return range;
 }
@@ -161,6 +170,9 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin(
 	topleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
 	topleft.y = static_cast<unsigned int>(center.y - std::ceil(range.y / 2.f));
 	
+	// apply padding
+	//topleft = sf::Vector2i{topleft - sf::Vector2i{padding}};
+	
 	// create iterator
 	return {topleft, range};
 }
@@ -169,19 +181,14 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin(
 template <>
 inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
 	assert(view != nullptr);
-	auto center = fromScreen(view->getCenter());
-	sf::Vector2i bottomleft, range;
+	auto range = sf::Vector2i{getRange()};
 	
-	range = sf::Vector2i{getRange()};
-	
-	// calculate topleft
-	// x - width / 2 & y - height / 2 : go to topleft corner
-	// y + 1 to end in next line (first invisible line)
-	bottomleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
-	bottomleft.y = static_cast<unsigned int>(center.y + std::ceil(range.y / 2.f)) + 1;
+	// calculate bottomleft position
+	auto pos = sf::Vector2i{*begin()};
+	pos.y += range.y + 1;
 	
 	// create iterator
-	return {bottomleft, range};
+	return {pos, range};
 }
 
 // specialization for isometric (diamond) maps

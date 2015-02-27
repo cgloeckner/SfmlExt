@@ -69,6 +69,8 @@ class Tiling {
 		sf::View const * view;
 		/// Number of pixels per tile graphics' dimension
 		sf::Vector2f tile_size;
+		/// Padding used for iteration
+		sf::Vector2u padding;
 		
 	public:
 		/// Create a new tiling for a fixed map size and tile size
@@ -95,6 +97,17 @@ class Tiling {
 		 * @param tsize The new tile size to use
 		 */
 		void setTileSize(sf::Vector2f const & tsize);
+		
+		/// Set padding for iteration
+		/**
+		 * The padding is added at all sides (top, bottom, left and right)
+		 * to the iteration range. This can e.g. be used to add objects to
+		 * the iteration range with aren't inside the view but contain
+		 * render-specific parts which would be visible (e.g. light sources).
+		 * The padding is given in tile-scale
+		 * @param pad The padding to use.
+		 */
+		void setPadding(sf::Vector2u const & pad);
 		
 		/// Get the current tile size
 		/**
