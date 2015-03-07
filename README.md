@@ -18,6 +18,7 @@ This is a small set of features I found useful when writing Games using C++ and 
 - `menu`: A light-weight and customizable gui implementation for option-based menus (using pure keyboard/gamepad input).
 - `state`: A customizable context-related state machine and application wrapper class.
 - `logger`: Blueprint for a logging mechanism with support for various SFML types.
+- `fader`: Provides a fading implementation for Sounds and Music.
 
 See `examples/` directory for full (compilable) examples.
 
@@ -25,6 +26,7 @@ See `examples/` directory for full (compilable) examples.
 Some features depend on the Thor Library. But `atlas` provides also setting an origin for a frame, e.g. when using `sf::Sprite`. Because this isn't supported by Thor, yet, the example code for `atlas` depends on a folk of Thor. The commit can be found here: https://github.com/cgloeckner/Thor/commit/7bd9d4a63947958a00691eae67da5a5378b1b343
 
 **Future plans**
+- Add doxygen-like comments to `fader`
 - (re)write unit testing
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
 - Extend `menu` to provide a text input widget
