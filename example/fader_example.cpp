@@ -23,13 +23,13 @@ int main() {
 			std::cout << "Stopped music" << std::endl;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			// volume up
+			// max volume up
 			volume = std::min(100.f, volume + 5.f);
 			manager.setMaxVolume(volume);
 			std::cout << "Set max volume to " << volume << "%" << std::endl;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			// volume up
+			// max volume down
 			volume = std::max(0.f, volume - 5.f);
 			manager.setMaxVolume(volume);
 			std::cout << "Set max volume to " << volume << "%" << std::endl;
