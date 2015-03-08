@@ -38,7 +38,7 @@ The `cache` implementation offers a single structure for holding multiple resour
 ```c++
 sfext::Cache cache;
 sf::Sprite sprite;
-sprite.setTexture(cache.set<sf::Texture>("data/enemy/goblin.png"));
+sprite.setTexture(cache.get<sf::Texture>("data/enemy/goblin.png"));
 ```
 
 ## About `tiling`

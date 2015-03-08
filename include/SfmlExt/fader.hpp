@@ -40,7 +40,7 @@ struct Fader {
 	FadeFunc in;
 	
 	/// Fading function for fade-ou. Modify it to change fade-out behavior.
-	FadeFun out;
+	FadeFunc out;
 };
 
 // ---------------------------------------------------------------------------
