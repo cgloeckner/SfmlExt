@@ -151,20 +151,40 @@ class Tiling {
 		 */
 		sf::Vector2f fromScreen(sf::Vector2f const & screen_pos) const;
 		
-		/// Returns iterator to first tile position in range
+		/// Calculate topleft position
 		/**
-		 * This operation requires a camera to be set!
-		 * @return Iterator to first tile position in range
+		 * The position of the topleft tile is returned. This can be used as
+		 * starting position for iteration.
+		 * @return Position of topleft tile
 		 */
-		TilingIterator<M> begin() const;
+		sf::Vector2i getTopleft() const;
 		
-		/// Returns iterator to first tile position out of range
+		/// Calculate bottomleft position
 		/**
-		 * This operation requires a camera to be set!
-		 * @return Iterator to first tile position out of range
+		 * The position of the bottomleft tile is returned. This can be used
+		 * as stopping position for iteration.
+		 * @return Position of bottomleft tile
 		 */
-		TilingIterator<M> end() const;
+		sf::Vector2i getBottomleft() const;
 };
+
+// ---------------------------------------------------------------------------
+
+/// Returns const iterator to first tile position in range
+/**
+ * @param tiling const reference to tiling instance
+ * @return Iterator to first tile position in range
+ */
+template <GridMode M>
+TilingIterator<M> begin(Tiling<M> const & tiling);
+
+/// Returns const iterator to first tile position out of range
+/**
+ * @param tiling const reference to tiling instance
+ * @return Iterator to first tile position out of range
+ */
+template <GridMode M>
+TilingIterator<M> end(Tiling<M> const & tiling);
 
 } // ::sfext
 

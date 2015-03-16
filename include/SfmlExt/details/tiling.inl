@@ -155,46 +155,27 @@ inline sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const 
 	};
 }
 
-// specialization for orthogonal maps
+// specialization for orthogonal
 template <>
-inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const {
+inline sf::Vector2i Tiling<GridMode::Orthogonal>::getTopleft() const {
+	sf::Vector2i topleft;
 	auto center = fromScreen(view.getCenter());
-	sf::Vector2i topleft, range;
-	
-	range = sf::Vector2i{getRange()};
+	auto range = sf::Vector2i{getRange()};
 	
 	// calculate topleft
 	// x - width / 2 & y - height / 2 : go to topleft corner
 	topleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
 	topleft.y = static_cast<unsigned int>(center.y - std::ceil(range.y / 2.f));
 	
-	// apply padding
-	//topleft = sf::Vector2i{topleft - sf::Vector2i{padding}};
-	
-	// create iterator
-	return {topleft, range};
-}
-
-// specialization for orthogonal maps
-template <>
-inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
-	auto range = sf::Vector2i{getRange()};
-	
-	// calculate bottomleft position
-	auto pos = sf::Vector2i{*begin()};
-	pos.y += range.y + 1;
-	
-	// create iterator
-	return {pos, range};
+	return topleft;
 }
 
 // specialization for isometric (diamond) maps
 template <>
-inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const {
+inline sf::Vector2i Tiling<GridMode::IsoDiamond>::getTopleft() const {
+	sf::Vector2i topleft;
 	auto center = fromScreen(view.getCenter());
-	sf::Vector2i topleft, range;
-	
-	range = sf::Vector2i{getRange()};
+	auto range = sf::Vector2i{getRange()};
 	
 	// calculate topleft
 	// x - width : go to topleft corner
@@ -202,25 +183,46 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin(
 	topleft.x = static_cast<unsigned int>(center.x) - range.x - 2;
 	topleft.y = static_cast<unsigned int>(center.y) - 2;
 	
-	// create iterator
-	return {topleft, range};
+	return topleft;
 }
 
 // specialization for orthogonal maps
-template <>
-inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() const {
-	auto center = fromScreen(view.getCenter());
-	sf::Vector2i bottomleft, range;
+template<>
+inline sf::Vector2i Tiling<GridMode::Orthogonal>::getBottomleft() const {
+	auto range = sf::Vector2i{getRange()};
 	
-	range = sf::Vector2i{getRange()};
+	// calculate bottomleft position
+	auto pos = getTopleft();
+	pos.y += range.y + 1;
+	
+	return pos;
+}
+
+// specialization for isometric (diamond) maps
+template <>
+inline sf::Vector2i Tiling<GridMode::IsoDiamond>::getBottomleft() const {
+	sf::Vector2i bottomleft;
+	auto center = fromScreen(view.getCenter());
+	auto range = sf::Vector2i{getRange()};
 	
 	// calculate topleft
 	// x - width + height / 2 & y + height / 2 : go to bottomleft corner
 	bottomleft.x = static_cast<unsigned int>(center.x) - range.x + range.y / 2;
 	bottomleft.y = static_cast<unsigned int>(center.y) + range.y / 2;
 	
-	// create iterator
-	return {bottomleft, range};
+	return bottomleft;
+}
+
+// ---------------------------------------------------------------------------
+
+template <GridMode M>
+inline TilingIterator<M> begin(Tiling<M> const & tiling) {
+	return {tiling.getTopleft(), sf::Vector2i{tiling.getRange()}};
+}
+
+template <GridMode M>
+inline TilingIterator<M> end(Tiling<M> const & tiling) {
+	return {tiling.getBottomleft(), sf::Vector2i{tiling.getRange()}};
 }
 
 } // ::sfext
