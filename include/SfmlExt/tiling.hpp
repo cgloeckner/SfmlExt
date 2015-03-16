@@ -66,7 +66,7 @@ template <GridMode M>
 class Tiling {
 	private:
 		/// Current camera view
-		sf::View const * view;
+		sf::View view;
 		/// Number of pixels per tile graphics' dimension
 		sf::Vector2f tile_size;
 		/// Padding used for iteration
@@ -86,6 +86,8 @@ class Tiling {
 		 * set a sf::View as a camera. The camera can be changed during the
 		 * runtime of the tiling object to enable e.g. splitscreen rendering
 		 * with only one instance of Tiling.
+		 * Remember that the tiling instance will handle its own copy of the
+		 * given view.
 		 * @param cam The view which describes the camera
 		 */
 		void setView(sf::View const & cam);
@@ -115,13 +117,11 @@ class Tiling {
 		 */
 		sf::Vector2f getTileSize() const;
 		
-		/// Returns whether the tiling uses a camera, yet
+		/// Get the current view
 		/**
-		 * Some operations require a camera to be set. This method is used to
-		 * check whether a camera was set.
-		 * @return true if a camera is set
+		 * @return copy of the view
 		 */
-		bool hasView() const;
+		sf::View getView() const;
 		
 		/// Determine number of tiles without iterating them
 		/**

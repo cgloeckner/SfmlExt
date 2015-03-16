@@ -11,12 +11,10 @@ int main() {
 	
 	sprite.setTexture(cache.get<sf::Texture>("data/wesnoth.org/attack0.png"));
 	sound.setBuffer(cache.get<sf::SoundBuffer>("data/wesnoth.org/axe.ogg"));
-	auto& music = cache.get<sf::Music>("data/wesnoth.org/battle.ogg");
 	
 	// play sounds and render sprite
 	sf::RenderWindow window{{320, 240}, "Animation example"};
 	sound.play();
-	music.play();
 	
 	while (window.isOpen()) {
 		sf::Event event;

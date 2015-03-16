@@ -66,8 +66,6 @@ for (auto const & pos: tiling) {
 Another idea of `menu` is to enable pure keyboard- and/or gamepad-based menu control. So there's a limited set of commands that can be bound individually. Those bindings can be set using `Thor::Action`.
 
 # Future Plans
-- Remove caching of `sf::Music` (useless!)
-- Tiling should hold its own copy of `sf::View` (just like `sf::RenderTexture` does)
 - Add more "About XY"-stuff
 - (re)write unit testing
 - Extend `tiling` to provide staggered isometric and hexagonal maps.

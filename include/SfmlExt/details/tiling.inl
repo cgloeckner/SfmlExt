@@ -1,6 +1,5 @@
 #pragma once
 #include <cmath>
-#include <cassert>
 
 namespace sfext {
 
@@ -63,14 +62,14 @@ sf::Vector2i TilingIterator<M>::getRange() const {
 
 template <GridMode M>
 Tiling<M>::Tiling(sf::Vector2f const & tile_size)
-	: view{nullptr}
+	: view{}
 	, tile_size{tile_size}
 	, padding{0u, 0u} {
 }
 
 template <GridMode M>
 void Tiling<M>::setView(sf::View const & cam) {
-	view = &cam;
+	view = cam;
 }
 
 template <GridMode M>
@@ -84,19 +83,14 @@ void Tiling<M>::setPadding(sf::Vector2u const & pad) {
 }
 
 template <GridMode M>
-sf::Vector2f Tiling<M>::getTileSize() const {
-	return tile_size;
-}
-
-template <GridMode M>
-bool Tiling<M>::hasView() const {
-	return (view != nullptr);
+sf::View Tiling<M>::getView() const {
+	return view;
 }
 
 // specialization for orthogonal maps
 template<>
 inline sf::Vector2u Tiling<GridMode::Orthogonal>::getRange() const {
-	auto size = view->getSize();
+	auto size = view.getSize();
 	sf::Vector2u range;
 	
 	// calculate range
@@ -113,7 +107,7 @@ inline sf::Vector2u Tiling<GridMode::Orthogonal>::getRange() const {
 // specialization for isometric (diamond) maps
 template<>
 inline sf::Vector2u Tiling<GridMode::IsoDiamond>::getRange() const {
-	auto size = view->getSize();
+	auto size = view.getSize();
 	sf::Vector2u range;
 	
 	// calculate range
@@ -159,8 +153,7 @@ inline sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const 
 // specialization for orthogonal maps
 template <>
 inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin() const {
-	assert(view != nullptr);
-	auto center = fromScreen(view->getCenter());
+	auto center = fromScreen(view.getCenter());
 	sf::Vector2i topleft, range;
 	
 	range = sf::Vector2i{getRange()};
@@ -180,7 +173,6 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::begin(
 // specialization for orthogonal maps
 template <>
 inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() const {
-	assert(view != nullptr);
 	auto range = sf::Vector2i{getRange()};
 	
 	// calculate bottomleft position
@@ -194,8 +186,7 @@ inline TilingIterator<GridMode::Orthogonal> Tiling<GridMode::Orthogonal>::end() 
 // specialization for isometric (diamond) maps
 template <>
 inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin() const {
-	assert(view != nullptr);
-	auto center = fromScreen(view->getCenter());
+	auto center = fromScreen(view.getCenter());
 	sf::Vector2i topleft, range;
 	
 	range = sf::Vector2i{getRange()};
@@ -213,8 +204,7 @@ inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::begin(
 // specialization for orthogonal maps
 template <>
 inline TilingIterator<GridMode::IsoDiamond> Tiling<GridMode::IsoDiamond>::end() const {
-	assert(view != nullptr);
-	auto center = fromScreen(view->getCenter());
+	auto center = fromScreen(view.getCenter());
 	sf::Vector2i bottomleft, range;
 	
 	range = sf::Vector2i{getRange()};

@@ -16,11 +16,9 @@ int main() {
 	
 	ortho_cam.setSize({width, height/2});
 	ortho_cam.setViewport({0.f, 0.f, 1.f, 0.5f});
-	ortho_tiling.setView(ortho_cam);
 	
 	iso_cam.setSize({width, height/2});
 	iso_cam.setViewport({0.f, 0.5f, 1.f, 0.5f});
-	iso_tiling.setView(iso_cam);
 	
 	// Prepare tileset
 	sf::Texture tileset;
@@ -45,6 +43,10 @@ int main() {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))		{ iso_cam.move( 0.f,  4.f); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))		{ iso_cam.move(-4.f,  0.f); }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))	{ iso_cam.move( 4.f,  0.f); }
+		
+		// update tiling views
+		ortho_tiling.setView(ortho_cam);
+		iso_tiling.setView(iso_cam);
 		
 		window.clear(sf::Color::Black);
 		// render ortho map

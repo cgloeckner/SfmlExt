@@ -1,7 +1,6 @@
 #pragma once
 #include <stdexcept>
 #include <cassert>
-#include <SFML/Audio/Music.hpp>
 
 namespace sfext {
 namespace details {
@@ -47,16 +46,6 @@ template <typename Resource>
 std::unique_ptr<Resource> DefaultLoader<Resource>::operator()(std::string const & fname) {
 	std::unique_ptr<Resource> resource{new Resource{}};
 	if (!resource->loadFromFile(fname)) {
-		return nullptr;
-	}
-	return resource;
-}
-
-// loader specialization for sf::Music
-template <>
-inline std::unique_ptr<sf::Music> DefaultLoader<sf::Music>::operator()(std::string const & fname) {
-	std::unique_ptr<sf::Music> resource{new sf::Music{}};
-	if (!resource->openFromFile(fname)) {
 		return nullptr;
 	}
 	return resource;
