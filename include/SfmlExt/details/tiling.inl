@@ -83,6 +83,11 @@ void Tiling<M>::setPadding(sf::Vector2u const & pad) {
 }
 
 template <GridMode M>
+sf::Vector2f Tiling<M>::getTileSize() const {
+	return tile_size;
+}
+
+template <GridMode M>
 sf::View Tiling<M>::getView() const {
 	return view;
 }
