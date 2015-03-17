@@ -73,11 +73,17 @@ class Application {
 		template <typename S>
 		void push(std::unique_ptr<S>& ptr);
 		
-		/// Get the render window
+		/// Get reference to the render window
 		/**
 		 * @return render window handled by the application
 		 */
 		sf::RenderWindow& getWindow();
+		
+		/// Get const reference to the render window
+		/**
+		 * @return render window handled by the application
+		 */
+		sf::RenderWindow const & getWindow() const;
 		
 		/// Invokes the mainloop.
 		/**

@@ -28,6 +28,11 @@ sf::RenderWindow& Application<Context>::getWindow() {
 }
 
 template <typename Context>
+sf::RenderWindow const & Application<Context>::getWindow() const {
+	return window;
+}
+
+template <typename Context>
 void Application<Context>::run() {
 	unsigned short frames = 0u;
 	unsigned short time = 0u;
