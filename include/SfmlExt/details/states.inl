@@ -100,7 +100,17 @@ Context& State<Context>::getContext() {
 }
 
 template <typename Context>
+Context const & State<Context>::getContext() const {
+	return context;
+}
+
+template <typename Context>
 Application<Context>& State<Context>::getApplication() {
+	return application;
+}
+
+template <typename Context>
+Application<Context> const & State<Context>::getApplication() const {
 	return application;
 }
 

@@ -129,17 +129,29 @@ class State: public sf::Drawable {
 		/// Base dtor
 		virtual ~State();
 		
-		/// Get the related context
+		/// Get reference to the related context
 		/**
 		 * @return related context
 		 */
 		Context& getContext();
 		
-		/// Get the parent application
+		/// Get const-reference to the related context
+		/**
+		 * @return related context
+		 */
+		Context const & getContext() const;
+		
+		/// Get reference to the parent application
 		/**
 		 * @return parent application
 		 */
 		Application<Context>& getApplication();
+		
+		/// Get const reference to the parent application
+		/**
+		 * @return parent application
+		 */
+		Application<Context> const & getApplication() const;
 		
 		/// Check whether the state was quit
 		/**
