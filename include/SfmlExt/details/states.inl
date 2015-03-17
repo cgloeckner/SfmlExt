@@ -11,8 +11,15 @@ Application<Context>::Application(Context& context, Args&&... args)
 
 template <typename Context>
 template <typename S, typename ...Args>
-void Application<Context>::push(Args&&... args) {
+void Application<Context>::emplace(Args&&... args) {
 	pending = state_ptr{new S{*this, context, std::forward<Args>(args)...}};
+}
+
+template <typename Context>
+template <typename S>
+void Application<Context>::push(std::unique_ptr<S>& ptr) {
+	pending = std::move(ptr);
+	ptr = nullptr;
 }
 
 template <typename Context>

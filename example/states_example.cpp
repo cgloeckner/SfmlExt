@@ -39,9 +39,9 @@ class DemoState: public sfext::State<MyContext> {
 				quit();
 			}
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return) {
-				// push successor state
+				// emplace successor state
 				auto& app = getApplication();
-				app.push<AnotherState>(sf::Color::Green);
+				app.emplace<AnotherState>(sf::Color::Green);
 			}
 		}
 		void update(sf::Time const & elapsed) override {
@@ -93,8 +93,9 @@ int main() {
 	sfext::Application<MyContext> app{context, sf::VideoMode(640, 480), "states example"};
 	app.getWindow().setVerticalSyncEnabled(true);
 	
-	// use DemoState as initial state (drawing a red rectangle)
-	app.push<DemoState>(sf::Color::Red);
+	// create DemoState (drawing a red rectangle) and push it as initial state
+	std::unique_ptr<DemoState> ptr{new DemoState{app, context, sf::Color::Red}};
+	app.push(ptr);
 	
 	// run the application's mainloop
 	app.run();

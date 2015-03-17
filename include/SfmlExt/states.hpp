@@ -56,14 +56,22 @@ class Application {
 		template <typename ...Args>
 		Application(Context& context, Args&&... args);
 		
-		/// Create and push a new state as pending
+		/// Create and emplace a new state as pending
 		/**
 		 * S determines the type of the actual state class. Args... are
 		 * multiple arguments, which are forwarded to S' ctor.
 		 * @param args... multiple arguments forwarded to S' ctor
 		 */
 		template <typename S, typename ...Args>
-		void push(Args&&... args);
+		void emplace(Args&&... args);
+		
+		/// Obtain an already created state as pending
+		/**
+		 * Moves a uniquely owned state to the application
+		 * @param state reference to unique pointer to move in
+		 */
+		template <typename S>
+		void push(std::unique_ptr<S>& ptr);
 		
 		/// Get the render window
 		/**
