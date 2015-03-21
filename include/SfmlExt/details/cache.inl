@@ -51,6 +51,11 @@ std::unique_ptr<Resource> DefaultLoader<Resource>::operator()(std::string const 
 	return resource;
 }
 
+template <typename Resource>
+bool DefaultLoader<Resource>::operator()(std::string const & fname, Resource& resource) {
+	return resource.loadFromFile(fname);
+}
+
 // ---------------------------------------------------------------------------
 
 template <typename Resource, typename Loader>
@@ -87,6 +92,36 @@ Resource& Cache::get(std::string const & fname) {
 	bool success = i->second->set(fname, raw);
 	assert(success); // note that !success will cause memory leak in debug mode
 	return *ptr;
+}
+
+template <typename Resource, typename Loader>
+Resource& Cache::reload(std::string const & fname) {
+	// search subcache for placement
+	auto index = std::type_index(typeid(Resource));
+	auto i = subcaches.find(index);
+	if (i == subcaches.end()) {
+		// subcache does not exist
+		throw std::invalid_argument(fname);
+	}
+	
+	// search resource
+	auto ptr = static_cast<Resource*>(i->second->get(fname));
+	if (ptr == nullptr) {
+		// resource not found
+		throw std::invalid_argument(fname);
+	}
+	
+	// note, that ptr refers to a resource inside the subcache
+	Resource& res = *ptr;
+	
+	// reload resource
+	Loader load;
+	if (!load(fname, res)) {
+		// loading failed
+		throw std::out_of_range(fname);
+	}
+	
+	return res;
 }
 
 template <typename Resource>

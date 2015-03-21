@@ -11,7 +11,11 @@ namespace sfext {
 /// Default loader for Sfml resources
 template <typename Resource>
 struct DefaultLoader {
+	/// Load a fresh new resource
 	std::unique_ptr<Resource> operator()(std::string const & fname);
+	
+	/// Reload a resource to an existing instance
+	bool operator()(std::string const & fname, Resource& resource);
 };
 
 /// Unique ownership multi resource cache
@@ -33,13 +37,13 @@ class Cache {
 	public:
 		/// Get a resource reference
 		/**
-		 * Returns a reference to the desired resource. The resource is identified
-		 * by its filename. If the resource wasn't already loaded, the Loader
-		 * template argument will be used to load it.
+		 * Returns a reference to the desired resource. The resource is
+		 * identified by its filename. If the resource wasn't already loaded,
+		 * the Loader template argument will be used to load it.
 		 * A valid Loader must implement the following signature:
 		 *		std::unique_ptr<Resource> operator()(std::string const &);
-		 * This get operation might fail if a resource should be loaded but cannot be
-		 * found.
+		 * This get operation might fail if a resource should be loaded but
+		 * cannot be found.
 		 * @throw std::ouf_of_range if resource cannot be loaded
 		 * @param Resource type
 		 * @param fname used as key to identify resource
@@ -47,6 +51,20 @@ class Cache {
 		 */
 		template <typename Resource, typename Loader=DefaultLoader<Resource>>
 		Resource& get(std::string const & fname);
+		
+		/// Reload a resource and return a reference
+		/**
+		 * Returns a reference to the desired resource. The resource is
+		 * identified by its filename. If the resource was already loaded, it
+		 * will be replaced. If it wasn't loaded yet, an exception is thrown.
+		 * @throw std::invalid_argument if resource wasn't loaded, yet.
+		 * @throw std::out_of_range if resource cannot be loaded
+		 * @param Resource type
+		 * @param fname used as key to identify resource
+		 * @return reference to resource
+		 */
+		template <typename Resource, typename Loader=DefaultLoader<Resource>>
+		Resource& reload(std::string const & fname);
 		
 		/// Determines whether the described resource exists inside the cache or not
 		/**

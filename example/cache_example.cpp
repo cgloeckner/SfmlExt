@@ -16,6 +16,9 @@ int main() {
 	sf::RenderWindow window{{320, 240}, "Animation example"};
 	sound.play();
 	
+	// force texture to be reloaded
+	cache.reload<sf::Texture>("data/wesnoth.org/attack0.png");
+	
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
