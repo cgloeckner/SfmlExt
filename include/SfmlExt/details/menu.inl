@@ -1,16 +1,24 @@
 #pragma once
+#include <algorithm>
 
 namespace sfext {
 
-template <typename T, typename Compare>
-Menu<T, Compare>::Menu()
+template <typename T>
+Menu<T>::Menu()
 	: widgets{}
 	, focus{0u}
 	, binding{} {
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+template <typename T>
+typename Menu<T>::container::iterator Menu<T>::at(T key) {
+	return std::find_if(begin(widgets), end(widgets), [&key](pair const & pair) {
+		return (pair.first == key);
+	});
+}
+
+template <typename T>
+void Menu<T>::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	for (auto const & pair: widgets) {
 		auto& w = *(pair.second);
 		// check visibility
@@ -22,25 +30,20 @@ void Menu<T, Compare>::draw(sf::RenderTarget& target, sf::RenderStates states) c
 	}
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::changeFocus(T key, bool forward) {
-	auto i = widgets.find(key);
-	if (i == widgets.end()) {
-		return;
-	}
+template <typename T>
+void Menu<T>::changeFocus(T key, bool forward) {
+	auto i = at(key);
 	// skip invisibe widget(s)
 	auto j = i;
 	while (!j->second->isVisible()) {
 		if (forward) {
 			++j;
-			if (j == widgets.end()) {
-				j = widgets.begin();
+			if (j == end(widgets)) {
+				j = begin(widgets);
 			}
 		} else {
-			if (j == widgets.begin()) {
-				// workaround: iterator vs. reverse_iterator
-				auto back = widgets.rbegin();
-				j = widgets.find(back->first);
+			if (j == begin(widgets)) {
+				j = std::prev(end(widgets));
 			} else {
 				--j;
 			}
@@ -51,93 +54,92 @@ void Menu<T, Compare>::changeFocus(T key, bool forward) {
 		}
 	}
 	// change focus
-	auto prev = widgets.find(focus);
-	if (prev != widgets.end()) {
+	auto prev = at(focus);
+	if (prev != end(widgets)) {
 		prev->second->setFocus(false);
 	}
 	j->second->setFocus(true);
 	focus = j->first;
 }
 
-template <typename T, typename Compare>
+template <typename T>
 template <typename W, typename ...Args>
-W& Menu<T, Compare>::acquire(T key, Args&&... args) {
+W& Menu<T>::acquire(T key, Args&&... args) {
 	// create widget
 	std::unique_ptr<Widget> widget{new W{std::forward<Args>(args)...}};
-	auto raw = dynamic_cast<W*>(widget.get());
+	auto raw_ptr = dynamic_cast<W*>(widget.get());
 	// obtain ownership to gui container
-	widgets[key] = std::move(widget);
+	widgets.emplace_back(key, std::move(widget));
 	if (widgets.size() == 1u) {
 		// focus first widget
 		changeFocus(key);
 	}
-	return *raw;
+	return *raw_ptr;
 }
 
-template <typename T, typename Compare>
+template <typename T>
 template <typename W>
-W& Menu<T, Compare>::query(T key) {
-	return dynamic_cast<W&>(*(widgets[key]));
+W& Menu<T>::query(T key) {
+	auto i = at(key);
+	return dynamic_cast<W&>(*(i->second));
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::release(T key) {
-	auto i = widgets.find(key);
-	if (i != widgets.end()) {
+template <typename T>
+void Menu<T>::release(T key) {
+	auto i = at(key);
+	if (i != end(widgets)) {
 		widgets.erase(i);
 	}
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::setFocus(T key) {
-	// search widget
-	auto i = widgets.find(key);
-	if (i != widgets.end()) {
+template <typename T>
+void Menu<T>::setFocus(T key) {
+	auto i = at(key);
+	if (i != end(widgets)) {
 		changeFocus(i->first);
 	}
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::bind(MenuAction const & action, thor::Action const & input) {
+template <typename T>
+void Menu<T>::bind(MenuAction const & action, thor::Action const & input) {
 	binding[action] = input;
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::handle(sf::Event const & event) {
+template <typename T>
+void Menu<T>::handle(sf::Event const & event) {
 	binding.pushEvent(event);
 }
 
-template <typename T, typename Compare>
-void Menu<T, Compare>::update() {
+template <typename T>
+void Menu<T>::update() {
 	if (!widgets.empty()) {
+		auto i = at(focus);
 		// handle activation
 		if (binding.isActive(MenuAction::Activate)) {
-			widgets[focus]->handle(MenuAction::Activate);
+			i->second->handle(MenuAction::Activate);
 		}
 		
 		// handle alternate
 		if (binding.isActive(MenuAction::AlternatePrev)) {
-			widgets[focus]->handle(MenuAction::AlternatePrev);
+			i->second->handle(MenuAction::AlternatePrev);
 		}
 		if (binding.isActive(MenuAction::AlternateNext)) {
-			widgets[focus]->handle(MenuAction::AlternateNext);
+			i->second->handle(MenuAction::AlternateNext);
 		}
 		
 		// handle navigation
 		if (binding.isActive(MenuAction::NavigatePrev)) {
-			auto i = widgets.find(focus);
-			if (i == widgets.begin()) {
-				changeFocus(widgets.rbegin()->first);
+			if (i == begin(widgets)) {
+				i = std::prev(end(widgets));
 			} else {
 				--i;
-				changeFocus(i->first, false);
 			}
+			changeFocus(i->first, false);
 		}
 		if (binding.isActive(MenuAction::NavigateNext)) {
-			auto i = widgets.find(focus);
 			++i;
-			if (i == widgets.end()) {
-				i = widgets.begin();
+			if (i == end(widgets)) {
+				i = begin(widgets);
 			}
 			changeFocus(i->first);
 		}

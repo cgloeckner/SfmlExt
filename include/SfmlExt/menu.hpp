@@ -1,8 +1,7 @@
 #pragma once
 #include <functional>
 #include <string>
-#include <vector>
-#include <map>
+#include <list>
 #include <memory>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Time.hpp>
@@ -133,17 +132,28 @@ class Select
  * You need to bind input actions to the predefined menu actions to enable
  * proper usage.
  */
-template <typename T, typename Compare=std::less<T>>
+template <typename T>
 class Menu: public sf::Drawable {
 	private:
+		using pair = std::pair<T, std::unique_ptr<Widget>>;
+		// note: list guarantees order and offers bidirectional iterator
+		using container = std::list<pair>;
+		
 		/// Owned widgets
-		std::map<T, std::unique_ptr<Widget>, Compare> widgets;
+		container widgets;
 		
 		/// Currently focused widget
 		T focus;
 		
 		/// Input bindings
 		thor::ActionMap<MenuAction> binding;
+		
+		/// Query iterator of a given key
+		/**
+		 * @param key of the widget
+		 * @return bidirectional iterator
+		 */
+		typename container::iterator at(T key);
 		
 		/// Changes focus to given index
 		/**
