@@ -216,8 +216,12 @@ int main() {
 	mode.push_back("extremly large");
 	mode.push_back("xD");
 	mode.setIndex(3);
-	menu.setFocus(SETTINGS_BTN);
 	option.setVisible(false);
+	
+	// set focus via key
+	menu.setFocus(SETTINGS_BTN);
+	// or via the widget itself
+	menu.setFocus(option);
 	
 	// here we go: usage is simple
 	while (window.isOpen()) {

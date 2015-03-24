@@ -101,6 +101,17 @@ void Menu<T>::setFocus(T key) {
 }
 
 template <typename T>
+template <typename W>
+void Menu<T>::setFocus(W const & widget) {
+	auto i = std::find_if(begin(widgets), end(widgets), [&widget](pair const & pair) {
+		return (pair.second.get() == &widget);
+	});
+	if (i != end(widgets)) {
+		changeFocus(i->first);
+	}
+}
+
+template <typename T>
 void Menu<T>::bind(MenuAction const & action, thor::Action const & input) {
 	binding[action] = input;
 }

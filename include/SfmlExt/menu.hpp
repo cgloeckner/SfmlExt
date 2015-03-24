@@ -209,9 +209,18 @@ class Menu: public sf::Drawable {
 		/**
 		 * Sets focus of the container to the given widget, which needs to be
 		 * created by the container in the first place.
-		 * @param widget to focus
+		 * @param key to identify the widget with
 		 */
 		void setFocus(T key);
+		
+		/// Focus the given widget.
+		/**
+		 * Sets focus of the container to the given widget, which needs to be
+		 * created by the container in the first place.
+		 * @param widget to focus
+		 */
+		template <typename W>
+		void setFocus(W const & widget);
 		
 		/// Binds an input action to a predefined menu action
 		/**
