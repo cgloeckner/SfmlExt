@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Time.hpp>
@@ -130,13 +131,14 @@ class Select
  * You need to bind input actions to the predefined menu actions to enable
  * proper usage.
  */
+template <typename T, typename Compare=std::less<T>>
 class Menu: public sf::Drawable {
 	private:
 		/// Owned widgets
-		std::vector<std::unique_ptr<Widget>> widgets;
+		std::map<T, std::unique_ptr<Widget>, Compare> widgets;
 		
 		/// Currently focused widget
-		std::size_t focus;
+		T focus;
 		
 		/// Input bindings
 		thor::ActionMap<MenuAction> binding;
@@ -146,8 +148,9 @@ class Menu: public sf::Drawable {
 		 * If the target is invisible, the next widget is chosen. If no widget
 		 * is available, the method will return without an effect.
 		 * @param index to focus
+		 * @param forward determines skip direction if widget invisible
 		 */
-		void changeFocus(std::size_t index);
+		void changeFocus(T key, bool forward=true);
 		
 		/// Draw method used for rendering
 		/**
@@ -165,11 +168,30 @@ class Menu: public sf::Drawable {
 		 * All arguments are forwarded to the actual ctor of the widget class
 		 * `W`. The returned widget is automatically managed and owned by the
 		 * menu.
+		 * @param key to identify the widget with
 		 * @param args... forwarded to ctor of `W`
 		 * @return reference to the created widget
 		 */
 		template <typename W, typename ...Args>
-		W& create(Args&&... args);
+		W& acquire(T key, Args&&... args);
+		
+		/// Query a widget by its key
+		/**
+		 * @pre The widgets needs to exist and be an instance of type `W`
+		 * @param key to identify the widget with
+		 * @return reference to the queried widget
+		 */
+		template <typename W>
+		W& query(T key);
+		
+		/// Release a widget
+		/**
+		 * This will destroy and release the described widget. All external
+		 * references to the widget are invalidated
+		 * @pre The widgets needs to exist
+		 * @param key to identify the widget with
+		 */
+		void release(T key);
 		
 		/// Focus the given widget.
 		/**
@@ -177,8 +199,7 @@ class Menu: public sf::Drawable {
 		 * created by the container in the first place.
 		 * @param widget to focus
 		 */
-		template <typename W>
-		void setFocus(W& widget);
+		void setFocus(T key);
 		
 		/// Binds an input action to a predefined menu action
 		/**

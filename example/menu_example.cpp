@@ -131,6 +131,13 @@ class MySelect: public sfext::Select {
 		}
 };
 
+// some integer constants to identify the widgets
+int const START_BTN = 0;
+int const OPTION_BOX = 1;
+int const SETTINGS_BTN = 2;
+int const MODE_SELECT = 3;
+int const QUIT_BTN = 4;
+
 int main() {
 	// prepare rendering
 	sf::RenderWindow window{{320, 320}, "Menu example"};
@@ -138,12 +145,19 @@ int main() {
 	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
 	
 	// create menu and widgets
-	sfext::Menu menu;
-	auto& start		= menu.create<MyButton>("start game", font);
-	auto& option	= menu.create<MyCheckbox>("hidden option?", font);
-	auto& settings	= menu.create<MyButton>("settings", font);
-	auto& mode		= menu.create<MySelect>(font);
-	auto& quit		= menu.create<MyButton>("quit", font);
+	sfext::Menu<int> menu; // identify widgets by an int
+	auto& start		= menu.acquire<MyButton>(START_BTN, "start game", font);
+	auto& option	= menu.acquire<MyCheckbox>(OPTION_BOX, "hidden option?", font);
+	auto& settings	= menu.acquire<MyButton>(SETTINGS_BTN, "settings", font);
+	auto& mode		= menu.acquire<MySelect>(MODE_SELECT, font);
+	menu.acquire<MyButton>(QUIT_BTN, "quit", font);
+	menu.acquire<MyButton>(5, "dummy", font);
+	
+	// release widget #5
+	menu.release(5);
+	
+	// query a widget QUIT_BTN
+	auto& quit = menu.query<MyButton>(QUIT_BTN);
 	
 	// place widgets
 	start.setPosition({160, 30});
@@ -202,7 +216,7 @@ int main() {
 	mode.push_back("extremly large");
 	mode.push_back("xD");
 	mode.setIndex(3);
-	menu.setFocus(settings);
+	menu.setFocus(SETTINGS_BTN);
 	option.setVisible(false);
 	
 	// here we go: usage is simple
