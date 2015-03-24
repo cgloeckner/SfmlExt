@@ -9,6 +9,9 @@ Widget::Widget()
 	, func(nullptr) {
 }
 
+Widget::~Widget() {
+}
+
 void Widget::bind(Widget::Callback func) {
 	this->func = func;
 }

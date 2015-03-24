@@ -33,6 +33,8 @@ class Widget: public sf::Drawable {
 		/// Create a blank widget
 		Widget();
 		
+		virtual ~Widget();
+		
 		/// Bind a callback function to this widget.
 		/**
 		 * @param func callback to invoke if widget is activate/alternated

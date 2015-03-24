@@ -184,6 +184,23 @@ class State: public sf::Drawable {
 		 * @param elapsed time since last frame
 		 */
 		virtual void update(sf::Time const & elapsed) = 0;
+		
+		/// Deactivate state
+		/**
+		 * This method is called before a state is left. This can happen if
+		 * the state was quit or another state was entered. It can be used to
+		 * trigger special operations etc.
+		 */
+		virtual void deactivate();
+		
+		/// (Re-)activate state
+		/**
+		 * This method is called after a state was entered. This can happen if
+		 * the state was reentered after another one was quit or when this
+		 * state was pushed as current state. It can be used to trigger
+		 * special operations.
+		 */
+		virtual void activate();
 };
 
 }

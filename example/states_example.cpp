@@ -1,3 +1,4 @@
+#include <iostream>
 #include <algorithm>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -45,6 +46,10 @@ class DemoState: public sfext::State<MyContext> {
 			}
 		}
 		void update(sf::Time const & elapsed) override {
+		}
+		
+		void activate() override {
+			std::cout << "DemoState activated" << std::endl;
 		}
 };
 

@@ -41,7 +41,13 @@ void Application<Context>::run() {
 	while (window.isOpen()) {
 		// handle pending state
 		if (pending != nullptr) {
+			// deactivate previous state
+			if (!states.empty()) {
+				states.back()->deactivate();
+			}
+			// activate new state
 			states.push_back(std::move(pending));
+			states.back()->activate();
 			pending = nullptr;
 		}
 		auto& current = *states.back();
@@ -54,9 +60,15 @@ void Application<Context>::run() {
 		
 		// handle quitting state
 		if (current.hasQuit()) {
+			// deactivate current state
+			states.back()->deactivate();
 			states.pop_back();
+			
 			if (states.empty()) {
 				window.close();
+			} else {
+				// activate new state
+				states.back()->activate();
 			}
 			continue;
 		}
@@ -126,6 +138,14 @@ bool State<Context>::hasQuit() const {
 
 template <typename Context>
 void State<Context>::onFramerateUpdate(float framerate) {
+}
+
+template <typename Context>
+void State<Context>::deactivate() {
+}
+
+template <typename Context>
+void State<Context>::activate() {
 }
 
 }
