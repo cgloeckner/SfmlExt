@@ -25,20 +25,11 @@ class Widget: public sf::Drawable {
 		/// Describes whether widget is visible
 		bool visible;
 		
-		/// Callback function for widget usage
-		Callback func;
-		
 	public:
 		/// Create a blank widget
 		Widget();
 		
 		virtual ~Widget();
-		
-		/// Bind a callback function to this widget.
-		/**
-		 * @param func callback to invoke if widget is activate/alternated
-		 */
-		void bind(Callback func);
 		
 		/// Change visibility
 		/**
@@ -81,6 +72,9 @@ class Button: public Widget {
 		/// React on activation
 		virtual void onActivate();
 	public:
+		/// Callbacks for activate
+		Callback activate;
+		
 		void handle(MenuAction action) override;
 };
 
@@ -96,10 +90,17 @@ class Select
 	private:
 		/// Index to an item
 		std::size_t index;
+		
 	protected:
 		/// React on changing
 		virtual void onChanged() = 0;
+		
 	public:
+		/// Callbacks for activate
+		Callback activate;
+		/// Callback for change
+		Callback change;
+	
 		/// Create an empty select widget
 		Select();
 		

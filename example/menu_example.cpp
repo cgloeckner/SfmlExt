@@ -167,23 +167,24 @@ int main() {
 	quit.setPosition({160, 280});
 		
 	// bind callbacks
-	start.bind([]() {
+	start.activate = []() {
 		std::cout << "Starting option is just a dummy :)" << std::endl;
-	});
-	settings.bind([&]() {
+	};
+	settings.activate = [&]() {
 		std::cout << "It's like black magic ... o.o" << std::endl;
 		option.setVisible(!option.isVisible());
-	});
-	option.bind([&]() {
-		std::cout << "Ok" << std::endl;
-	});
-	mode.bind([&]() {
+	};
+	// note: `options` remains unbound
+	mode.activate = [&]() {
 		std::cout << "Yeah!" << std::endl;
-	});
-	quit.bind([&]() {
+	};
+	mode.change = [&]() {
+		std::cout << "Ok look :)" << std::endl;
+	};
+	quit.activate = [&]() {
 		std::cout << "Cya^^" << std::endl;
 		window.close();
-	});
+	};
 	
 	// bind actions
 	menu.bind(

@@ -5,15 +5,10 @@
 namespace sfext {
 
 Widget::Widget()
-	: visible{true}
-	, func(nullptr) {
+	: visible{true} {
 }
 
 Widget::~Widget() {
-}
-
-void Widget::bind(Widget::Callback func) {
-	this->func = func;
 }
 
 void Widget::setVisible(bool visible) {
@@ -32,8 +27,8 @@ void Button::onActivate() {
 void Button::handle(MenuAction action) {
 	if (action == MenuAction::Activate) {
 		onActivate();
-		if (func != nullptr) {
-			func();
+		if (activate != nullptr) {
+			activate();
 		}
 	}
 }
@@ -63,8 +58,14 @@ void Select::handle(MenuAction action) {
 		}
 	}
 	onChanged();
-	if (func != nullptr) {
-		func();
+	if (action == MenuAction::Activate) {
+		if (activate != nullptr) {
+			activate();
+		}
+	} else if (action == MenuAction::AlternatePrev || action == MenuAction::AlternateNext) {
+		if (change != nullptr) {
+			change();
+		}
 	}
 }
 
