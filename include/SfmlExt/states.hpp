@@ -85,6 +85,14 @@ class Application {
 		 */
 		sf::RenderWindow const & getWindow() const;
 		
+		/// Query all states
+		/**
+		 * A vector of non-owning state pointers is returned. The last state
+		 * in the vector is the active state
+		 * @return vector of non-owning state pointers
+		 */
+		std::vector<State<Context>*> queryStates() const;
+		
 		/// Invokes the mainloop.
 		/**
 		 * It will terminate after the window was closed
@@ -120,10 +128,6 @@ class State: public sf::Drawable {
 		/// determines whether the state is going to quit
 		bool _quit;
 		
-	protected:
-		/// Causes state to be destroyed on the next frame
-		void quit();
-		
 	public:
 		/// Base ctor
 		/**
@@ -158,6 +162,9 @@ class State: public sf::Drawable {
 		 * @return parent application
 		 */
 		Application<Context> const & getApplication() const;
+		
+		/// Causes state to be destroyed on the next frame
+		void quit();
 		
 		/// Check whether the state was quit
 		/**

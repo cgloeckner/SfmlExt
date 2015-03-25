@@ -81,6 +81,12 @@ class AnotherState: public sfext::State<MyContext> {
 				// quit this state (here: return to DemoState);
 				quit();
 			}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+				// shutdown all states
+				for (auto ptr: getApplication().queryStates()) {
+					ptr->quit();
+				}
+			}
 		}
 		void update(sf::Time const & elapsed) override {
 		}

@@ -33,6 +33,16 @@ sf::RenderWindow const & Application<Context>::getWindow() const {
 }
 
 template <typename Context>
+std::vector<State<Context>*> Application<Context>::queryStates() const {
+	std::vector<State<Context>*> result;
+	result.reserve(states.size());
+	for (auto& ptr: states) {
+		result.push_back(ptr.get());
+	}
+	return result;
+}
+
+template <typename Context>
 void Application<Context>::run() {
 	unsigned short frames = 0u;
 	unsigned short time = 0u;
@@ -107,11 +117,6 @@ State<Context>::~State() {
 }
 
 template <typename Context>
-void State<Context>::quit() {
-	_quit = true;
-}
-
-template <typename Context>
 Context& State<Context>::getContext() {
 	return context;
 }
@@ -129,6 +134,11 @@ Application<Context>& State<Context>::getApplication() {
 template <typename Context>
 Application<Context> const & State<Context>::getApplication() const {
 	return application;
+}
+
+template <typename Context>
+void State<Context>::quit() {
+	_quit = true;
 }
 
 template <typename Context>
