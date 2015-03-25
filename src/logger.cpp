@@ -105,4 +105,9 @@ Logger& operator<<(Logger& left, sf::Joystick::Axis value) {
 	return left << thor::toString(value);
 }
 
+Logger& operator<<(Logger& left, sf::VideoMode value) {
+	return left << value.width << "x" << value.height << "x"
+		<< value.bitsPerPixel;
+}
+
 }

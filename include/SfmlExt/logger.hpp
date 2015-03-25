@@ -10,6 +10,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Joystick.hpp>
+#include <SFML/Window/VideoMode.hpp>
 
 namespace sfext {
 
@@ -95,6 +96,7 @@ Logger& operator<<(Logger& left, sf::Color const & value);
 Logger& operator<<(Logger& left, sf::Keyboard::Key value);
 Logger& operator<<(Logger& left, sf::Mouse::Button value);
 Logger& operator<<(Logger& left, sf::Joystick::Axis value);
+Logger& operator<<(Logger& left, sf::VideoMode value);
 
 template <typename T>
 Logger& operator<<(Logger& left, sf::Vector2<T> const & value);
