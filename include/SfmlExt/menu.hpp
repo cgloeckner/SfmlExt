@@ -5,6 +5,7 @@
 #include <memory>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Time.hpp>
+#include <SFML/System/String.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <Thor/Input/Action.hpp>
@@ -14,11 +15,13 @@ namespace sfext {
 
 /// Implemented menu actions
 enum class MenuAction {
-	NavigatePrev, NavigateNext, Activate, AlternatePrev, AlternateNext
+	NavigatePrev, NavigateNext, Activate, AlternatePrev, AlternateNext, Type
 };
 
 /// Base class for widgets
-class Widget: public sf::Drawable {
+class Widget
+	: public sf::Drawable {
+	
 	protected:
 		using Callback = std::function<void()>;
 		
@@ -49,6 +52,12 @@ class Widget: public sf::Drawable {
 		 */
 		virtual void handle(MenuAction action) = 0;
 		
+		/// Handle typing a unicode character
+		/**
+		 * @param unicode character
+		 */
+		virtual void handle(sf::Uint32 unicode);
+		
 		/// Set position
 		/**
 		 * Whether the position is used as topleft, center or else is up to
@@ -71,6 +80,7 @@ class Button: public Widget {
 	protected:
 		/// React on activation
 		virtual void onActivate();
+		
 	public:
 		/// Callbacks for activate
 		Callback activate;
@@ -85,8 +95,9 @@ class Button: public Widget {
  * A Select contains multiple strings and holds an index to one of these items.
  */
 class Select
-		: public Widget
-		, public std::vector<std::string> {
+	: public Widget
+	, public std::vector<std::string> {
+	
 	private:
 		/// Index to an item
 		std::size_t index;
@@ -125,6 +136,32 @@ class Select
 
 // ---------------------------------------------------------------------------
 
+class Input
+	: public Widget {
+	
+	protected:
+		virtual void onTyping();
+		
+		bool isAllowed(sf::Uint32 unicode) const;
+		
+	public:
+		std::vector<sf::Uint32> whitelist, blacklist;
+		std::function<void(sf::Uint32, bool)> typing;
+		
+		Input();
+		
+		virtual sf::String getString() const = 0;
+		virtual void setString(sf::String const & string) = 0;
+		
+		virtual void handle(sfext::MenuAction action) override;
+		virtual void handle(sf::Uint32 unicode) override;
+		
+		void enableChar(sf::Uint32 unicode);
+		void disableChar(sf::Uint32 unicode);
+};
+
+// ---------------------------------------------------------------------------
+
 /// Menu context / container
 /**
  * Owns multiple widgets which are created using the factory method `create`.
@@ -145,6 +182,9 @@ class Menu: public sf::Drawable {
 		
 		/// Currently focused widget
 		T focus;
+		
+		/// Received unicode symbols since last update
+		std::vector<sf::Uint32> unicodes;
 		
 		/// Input bindings
 		thor::ActionMap<MenuAction> binding;
@@ -222,6 +262,13 @@ class Menu: public sf::Drawable {
 		 */
 		template <typename W>
 		void setFocus(W const & widget);
+		
+		/// Query key of currently focused widget
+		/**
+		 * @pre Menu needs to contain at least one visible widget
+		 * @return key of widget
+		 */
+		T queryFocus() const;
 		
 		/// Binds an input action to a predefined menu action
 		/**

@@ -7,6 +7,7 @@ template <typename T>
 Menu<T>::Menu()
 	: widgets{}
 	, focus{0u}
+	, unicodes{}
 	, binding{} {
 }
 
@@ -112,6 +113,11 @@ void Menu<T>::setFocus(W const & widget) {
 }
 
 template <typename T>
+T Menu<T>::queryFocus() const {
+	return focus;
+}
+
+template <typename T>
 void Menu<T>::bind(MenuAction const & action, thor::Action const & input) {
 	binding[action] = input;
 }
@@ -119,6 +125,10 @@ void Menu<T>::bind(MenuAction const & action, thor::Action const & input) {
 template <typename T>
 void Menu<T>::handle(sf::Event const & event) {
 	binding.pushEvent(event);
+	
+	if (event.type == sf::Event::TextEntered) {
+		unicodes.push_back(event.text.unicode);
+	}
 }
 
 template <typename T>
@@ -154,6 +164,12 @@ void Menu<T>::update() {
 			}
 			changeFocus(i->first);
 		}
+		
+		// handle all read unicode characters
+		for (auto unicode: unicodes) {
+			i->second->handle(unicode);
+		}
+		unicodes.clear();
 	}
 	
 	// reset input

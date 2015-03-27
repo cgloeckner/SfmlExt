@@ -131,12 +131,50 @@ class MySelect: public sfext::Select {
 		}
 };
 
+// A customized input widget
+class MyInput: public sfext::Input {
+	private:
+		sf::Text label;
+		
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+			target.draw(label, states);
+		}
+	public:
+		MyInput(std::string const & caption, sf::Font const & font)
+			: sfext::Input{}
+			, label{caption, font} {
+			// align label centered
+			auto rect = label.getLocalBounds();
+			label.setOrigin({
+				rect.left + rect.width / 2.f,
+				rect.top + rect.height / 2.f
+			});
+		}
+		void setFocus(bool focused) override {
+			if (focused) {
+				label.setColor(sf::Color::Yellow);
+			} else {
+				label.setColor(sf::Color::White);
+			}
+		}
+		void setPosition(sf::Vector2f const & pos) override {
+			label.setPosition(pos);
+		}
+		sf::String getString() const override {
+			return label.getString();
+		}
+		void setString(sf::String const & string) override {
+			label.setString(string);
+		}
+};
+
 // some integer constants to identify the widgets
 int const START_BTN = 0;
 int const OPTION_BOX = 1;
 int const SETTINGS_BTN = 2;
 int const MODE_SELECT = 3;
 int const QUIT_BTN = 4;
+int const NAME_INPUT = 6;
 
 int main() {
 	// prepare rendering
@@ -152,6 +190,7 @@ int main() {
 	auto& mode		= menu.acquire<MySelect>(MODE_SELECT, font);
 	menu.acquire<MyButton>(QUIT_BTN, "quit", font);
 	menu.acquire<MyButton>(5, "dummy", font);
+	auto& edit		= menu.acquire<MyInput>(NAME_INPUT, "default value", font);
 	
 	// release widget #5
 	menu.release(5);
@@ -164,8 +203,9 @@ int main() {
 	option.setPosition({160, 70});
 	settings.setPosition({160, 110});
 	mode.setPosition({160, 150});
-	quit.setPosition({160, 280});
-		
+	quit.setPosition({160, 250});
+	edit.setPosition({160, 290});
+	
 	// bind callbacks
 	start.activate = []() {
 		std::cout << "Starting option is just a dummy :)" << std::endl;
@@ -184,6 +224,14 @@ int main() {
 	quit.activate = [&]() {
 		std::cout << "Cya^^" << std::endl;
 		window.close();
+	};
+	edit.typing = [&](sf::Uint32 unicode, bool allowed) {
+		if (allowed) {
+			std::cout << "Pressed ";
+		} else {
+			std::cout << "Ignored ";
+		}
+		std::cout << unicode << std::endl;
 	};
 	
 	// bind actions
@@ -218,6 +266,21 @@ int main() {
 	mode.push_back("xD");
 	mode.setIndex(3);
 	option.setVisible(false);
+	
+	// enable only 0-9 and A-Z, a-z for input
+	edit.whitelist.reserve(10u + 2u * 26u);
+	for (sf::Uint32 i = 0u; i < 10u; ++i) {
+		edit.whitelist.push_back(i + u'0');
+	}
+	for (sf::Uint32 i = 0u; i < 26u; ++i) {
+		edit.whitelist.push_back(i + u'a');
+		edit.whitelist.push_back(i + u'A');
+	}
+	
+	// disable 'G', 'h' and '7'
+	edit.blacklist.push_back(u'G');
+	edit.blacklist.push_back(u'h');
+	edit.blacklist.push_back(u'7');
 	
 	// set focus via key
 	menu.setFocus(SETTINGS_BTN);

@@ -69,5 +69,4 @@ Another idea of `menu` is to enable pure keyboard- and/or gamepad-based menu con
 - Add more "About XY"-stuff
 - (re)write unit testing
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
-- Extend `menu` to provide a text input widget
 - `astar`: A customized A-Star-implementation for 2d grids, because typical A-Star on general graphs cannot easily be implemented with `std::priority_queue`.
