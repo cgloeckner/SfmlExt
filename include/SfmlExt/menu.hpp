@@ -15,7 +15,7 @@ namespace sfext {
 
 /// Implemented menu actions
 enum class MenuAction {
-	NavigatePrev, NavigateNext, Activate, AlternatePrev, AlternateNext, Type
+	NavigatePrev, NavigateNext, Activate, AlternatePrev, AlternateNext
 };
 
 /// Base class for widgets
