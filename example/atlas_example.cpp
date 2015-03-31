@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <Thor/Animations.hpp>
-// Note that a Thor-fork is used in order to apply an origin to a sprite
+// Note that a modified Thor-version is used in order to apply an origin to a sprite
+// see `thor_changes.diff`
 
 #include <SfmlExt/atlas.hpp>
 
