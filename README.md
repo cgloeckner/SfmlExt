@@ -12,7 +12,6 @@ All resources inside `data/wesnoth.org/` are taken from **Battle for Wesnoth**, 
 
 ## Features
 - `atlas`: Image atlas implementation to create large framesets from many small single frames. It also supports shrinking images to their minimum before adding them.
-- `cache`: Multi-resource cache holding unique ownership. Each resource is identified by it's filename.
 - `tiling`: Provides different 2d tiling approaches (such as orthogonal or isometric tiling) as well as range-based iteration in rendering order.
 - `menu`: A light-weight and customizable gui implementation for option-based menus (using pure keyboard/gamepad input).
 - `state`: A customizable context-related state machine and application wrapper class.
@@ -30,16 +29,6 @@ Some features depend on the Thor Library. But `atlas` provides also setting an o
 The motivation of `atlas` is driven by the fact, that GPUs have an individual maximum texture size, which limits possibilities when porting a game to an older or less-powerfull platform (e.g. a netbook). But most sprite framesets have lots of spaced pixels inside, so shrinking them would be possible without losing quality.
 The idea of `atlas` is to have an interface to merge multiple single image (e.g. frame of a sprite animation) and pack them tightly together to achieve a well-packed texture atlas. This implies having individual clipping rectangles and offsets (determining the image's origin) for each frame. This mapping between original image (e.g. identified by a string or an integer, see `Atlas<>`) to the "clipping information" (rectangle + offset) is also offered by `atlas`.
 There are two classes: An atlas generator and the actual atlas. The generator collects all images and creates the atlas. The atlas itself holds the tighly packed texture and the clipping information.
-
-## About `cache`
-Of course there is already a cache at **Thor**. But this one uses `shared_ptr` which is another approach of "how the world could work". An easy approach is implemented by `cache`: The cache holds all resources uniquely until the cache is destroyed. So it can always deliver references to desired resources, which can be used by other parts of the code. The downside is that the `cache` must exist as long as any of its resources if used outside of it. But in most cases, a resource holder is bound to the game instance or the entire program, so it will be released when the game session or the entire program is quit.
-The `cache` implementation offers a single structure for holding multiple resources of multiple types. In order to load a resource, the SFML-like interface `bool T::loadFromFile(string const &)` is used by the default loader. Feel free to specialize the default loader template for your types or write your own loader. The loader can always be determine when acquiring a resource.
-
-```c++
-sfext::Cache cache;
-sf::Sprite sprite;
-sprite.setTexture(cache.get<sf::Texture>("data/enemy/goblin.png"));
-```
 
 ## About `tiling`
 Tiling can be straight-forward or a bit strange - depending on the actual type of tiling (e.g. pure orthogonal, diamond-shaped isometric etc.). Also traversing all visible tiles can be bloated, especially if multiple parts need to traverse the tiles on their own. The idea of `tiling` is to determine the type of tiling at compile-time for best efficiency.
@@ -66,7 +55,6 @@ for (auto const & pos: tiling) {
 Another idea of `menu` is to enable pure keyboard- and/or gamepad-based menu control. So there's a limited set of commands that can be bound individually. Those bindings can be set using `Thor::Action`.
 
 # Future Plans
-- Remove Cache because Thor now provides unique ownership caching
 - Add more "About XY"-stuff
 - (re)write unit testing
 - Extend `tiling` to provide staggered isometric and hexagonal maps.
