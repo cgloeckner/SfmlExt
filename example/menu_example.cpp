@@ -180,7 +180,7 @@ int main() {
 	// prepare rendering
 	sf::RenderWindow window{{320, 320}, "Menu example"};
 	sf::Font font;
-	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
+	font.loadFromFile("data/DejaVuSans.ttf");
 	
 	// create menu and widgets
 	sfext::Menu<int> menu; // identify widgets by an int

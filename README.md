@@ -8,7 +8,7 @@ It is a small set of features I found useful when writing Games using C++ and SF
 - Thor 2.0 (see below)
 
 ## Licence
-All resources inside `data/wesnoth.org/` are taken from **Battle for Wesnoth**, so all copyright is reserved by the corresponding artists. See www.wesnoth.org for more details. All other resources are made on my own - just for demonstration purpose. They're public domain resources. See the `LICENCE` file for information about the source code of this repository. Feel free to share!
+The font is taken from **Battle for Wesnoth**, so all copyright is reserved by the corresponding artist. See www.wesnoth.org for more details. All other resources are made on my own - just for demonstration purpose. The human-sprite is part of my rogue-like. The dummy tileset was created only for demonstration. See the `LICENCE` file for information about the source code of this repository. Feel free to share!
 
 ## Features
 - `atlas`: Image atlas implementation to create large framesets from many small single frames. It also supports shrinking images to their minimum before adding them.

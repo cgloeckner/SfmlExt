@@ -10,7 +10,7 @@ struct MyContext {
 	sf::Font font;
 	
 	MyContext() {
-		font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
+		font.loadFromFile("data/DejaVuSans.ttf");
 	}
 };
 

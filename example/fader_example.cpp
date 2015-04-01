@@ -9,12 +9,12 @@ int main() {
 	sfext::MusicManager manager;
 	float volume = 100.f;
 	
-	manager.play("data/wesnoth.org/battle_edit.ogg");
+	manager.play("data/music.ogg");
 	
 	while (true) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
 			// fade-in / cross-fade
-			manager.play("data/wesnoth.org/battle_edit.ogg");
+			manager.play("data/music.ogg");
 			std::cout << "Fading tracks..." << std::endl;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {

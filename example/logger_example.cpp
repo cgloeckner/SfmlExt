@@ -77,7 +77,7 @@ int main() {
 	// prepare rendering
 	sf::RenderWindow window{{640, 480}, "Logger example"};
 	sf::Font font;
-	font.loadFromFile("data/wesnoth.org/DejaVuSans.ttf");
+	font.loadFromFile("data/DejaVuSans.ttf");
 	
 	// create two log instances
 	MyLogger error{font, {0.f, 0.f}, {255, 100, 0}, 3, "error.log"};

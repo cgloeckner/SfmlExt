@@ -8,14 +8,14 @@
 #include <SfmlExt/atlas.hpp>
 
 // just a helper (see below)
-bool create_atlas(sfext::Atlas<std::string>& atlas) {
+bool create_atlas(sfext::Atlas<int>& atlas) {
 	// Load images from disk and append to the atlas with an origin
-	sfext::AtlasGenerator<std::string> builder;
+	sfext::AtlasGenerator<int> builder;
 	for (auto i = 0u; i < 5u; ++i) {
 		sf::Image img;
-		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
+		std::string fname{"data/human_melee_" + std::to_string(i) + ".png"};
 		img.loadFromFile(fname);
-		builder.add(fname, std::move(img), {36.f, 48.f});
+		builder.add(i, std::move(img), {32.f, 32.f});
 	}
 	
 	// Generate atlas image
@@ -24,7 +24,7 @@ bool create_atlas(sfext::Atlas<std::string>& atlas) {
 
 int main() {
 	// create atlas from images (see above)
-	sfext::Atlas<std::string> atlas;
+	sfext::Atlas<int> atlas;
 	if (!create_atlas(atlas)) {
 		std::cout << "Building failed!" << std::endl;
 		return 0;
@@ -35,8 +35,7 @@ int main() {
 	// Create Animation -- works just as normal (using SFML and Thor)
 	thor::FrameAnimation attack;
 	for (auto i = 0u; i < 5u; ++i) {
-		std::string fname{"data/wesnoth.org/attack" + std::to_string(i) + ".png"};
-		attack.addFrame(1.f, atlas.frames[fname].clipping, atlas.frames[fname].origin);
+		attack.addFrame(1.f, atlas.frames[i].clipping, atlas.frames[i].origin);
 	}
 	thor::Animator<sf::Sprite, std::string> animator;
 	animator.addAnimation("attack", attack, sf::milliseconds(625)); // 5x 125ms
@@ -47,6 +46,7 @@ int main() {
 	sf::Sprite sprite;
 	sprite.setTexture(frameset);
 	sprite.setPosition({160, 120});
+	sprite.setScale({2.f, 2.f});
 
 	// Render!
 	sf::RenderWindow window{{320, 240}, "Animation example"};
