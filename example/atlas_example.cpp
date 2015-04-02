@@ -2,8 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <Thor/Animations.hpp>
-// Note that a modified Thor-version is used in order to apply an origin to a sprite
-// see `thor_changes.diff`
 
 #include <SfmlExt/atlas.hpp>
 
@@ -17,7 +15,7 @@ bool create_atlas(sfext::Atlas<int>& atlas) {
 		img.loadFromFile(fname);
 		builder.add(i, std::move(img), {32.f, 32.f});
 	}
-	
+
 	// Generate atlas image
 	return builder.generate({16u, 16u}, 256, atlas);
 }

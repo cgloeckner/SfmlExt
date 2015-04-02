@@ -5,7 +5,7 @@ It is a small set of features I found useful when writing Games using C++ and SF
 - C++11
 - SFML 2.2 (might also work with 2.x, but not tested, yet)
 - Boost.Math, Boost.Algorithm
-- Thor 2.0 (see below)
+- Thor 2.0
 
 ## Licence
 The font is taken from **Battle for Wesnoth**, so all copyright is reserved by the corresponding artist. See www.wesnoth.org for more details. All other resources are made on my own - just for demonstration purpose. The human-sprite is part of my rogue-like. The dummy tileset was created only for demonstration. See the `LICENCE` file for information about the source code of this repository. Feel free to share!
@@ -19,9 +19,6 @@ The font is taken from **Battle for Wesnoth**, so all copyright is reserved by t
 - `fader`: Provides a fading implementation for Sounds and Music.
 
 See `examples/` directory for full (compilable) examples.
-
-## Dependency to Thor
-Some features depend on the Thor Library. But `atlas` provides also setting an origin for a frame, e.g. when using `sf::Sprite`. Because this isn't supported by Thor, yet, the example code for `atlas` depends on a folk of Thor. The patch is located in this repository: `thor_changes.diff`
 
 # About the features
 
