@@ -46,21 +46,21 @@ void AtlasGenerator<Key>::add(Key const & key, sf::Image&& image, sf::Vector2f o
 	sf::IntRect bounds{{0u, 0u}, size};
 	
 	// shrink from bottom
-	while (rowIsEmpty(image, bounds.height - 2u)) {
+	while (rowIsEmpty(image, bounds.height - 1u)) {
 		--bounds.height;
 	}
 	// shrink from right
-	while (colIsEmpty(image, bounds.width - 2u)) {
+	while (colIsEmpty(image, bounds.width - 1u)) {
 		--bounds.width;
 	}
 	// shrink from top
-	while (rowIsEmpty(image, bounds.top + 1u)) {
+	while (rowIsEmpty(image, bounds.top)) {
 		++bounds.top;
 		--bounds.height;
 		--origin.y;
 	}
 	// shrink from left
-	while (colIsEmpty(image, bounds.left + 1u)) {
+	while (colIsEmpty(image, bounds.left)) {
 		++bounds.left;
 		--bounds.width;
 		--origin.x;
@@ -91,7 +91,7 @@ bool AtlasGenerator<Key>::generate(sf::Vector2u const & min_step, std::size_t si
 	sf::Vector2i step_range{min_step};
 	for (auto& chunk: chunks) {
 		if (chunk.bounds.width > size || chunk.bounds.height > size) {
-			throw std::runtime_error("Too small target size");
+			throw std::length_error("Too small target size");
 		}
 		
 		if (lookup.empty()) {
