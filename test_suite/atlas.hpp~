@@ -1,3 +1,4 @@
+#include <string>
 #include <SFML/Graphics.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -46,7 +47,7 @@ BOOST_AUTO_TEST_CASE(atlas_customized) {
 	images[4u].create(100u, 350u, sf::Color::Black);
 	
 	// create atlas generator
-	sfext::AtlasGenerator<std::string> generator;
+	sfext::AtlasGenerator<std::size_t> generator;
 	for (auto i = 0u; i < images.size(); ++i) {
 		generator.add("img_" + std::to_string(i), std::move(images[i]), {});
 	}
