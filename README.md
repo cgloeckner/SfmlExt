@@ -4,7 +4,7 @@ It is a small set of features I found useful when writing Games using C++ and SF
 ## Dependencies
 - C++11
 - SFML 2.2 (might also work with 2.x, but not tested, yet)
-- Boost.Math, Boost.Algorithm
+- Boost.Math, Boost.Algorithm, Boost.Test (Unittests only)
 - Thor 2.0
 
 ## Licence
