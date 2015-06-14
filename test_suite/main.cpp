@@ -3,4 +3,4 @@
 #include <boost/test/unit_test.hpp>
 
 #include <test_suite/atlas.hpp>
-
+#include <test_suite/tiling.hpp>

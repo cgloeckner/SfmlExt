@@ -26,10 +26,9 @@ template <>
 inline void TilingIterator<GridMode::Orthogonal>::operator++() {
 	// step through (screen) row's cells
 	++current.x;
-	if (current.x > start.x + range.x) {
+	if (current.x >= start.x + range.x) {
 		// go to next (screen) row
 		current.x = start.x;
-		//++current.screen_row;
 		++current.y;
 	}
 }
@@ -41,7 +40,7 @@ inline void TilingIterator<GridMode::IsoDiamond>::operator++() {
 	--current.y;
 	++current.x;
 	++count;
-	if (count > range.x) {
+	if (count >= range.x) {
 		// go to next screen row --> zigzag
 		if ((current.x + current.y) % 2 == 0u) {
 			++start.y;
@@ -122,6 +121,9 @@ inline sf::Vector2u Tiling<GridMode::IsoDiamond>::getRange() const {
 	range.x =  static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
 	range.y = (static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
 	
+	// apply padding
+	range += padding * 2u;
+	
 	return range;
 }
 
@@ -159,7 +161,7 @@ inline sf::Vector2f Tiling<GridMode::IsoDiamond>::fromScreen(sf::Vector2f const 
 template <>
 inline sf::Vector2i Tiling<GridMode::Orthogonal>::getTopleft() const {
 	sf::Vector2i topleft;
-	auto center = fromScreen(view.getCenter());
+	auto center = sf::Vector2i{fromScreen(view.getCenter())};
 	auto range = sf::Vector2i{getRange()};
 	
 	// calculate topleft
@@ -191,9 +193,9 @@ template<>
 inline sf::Vector2i Tiling<GridMode::Orthogonal>::getBottomleft() const {
 	auto range = sf::Vector2i{getRange()};
 	
-	// calculate bottomleft position
+	// calculate bottomleft position (note: range.y == 1 causes ++y)
 	auto pos = getTopleft();
-	pos.y += range.y + 1;
+	pos.y += range.y;
 	
 	return pos;
 }
@@ -205,7 +207,7 @@ inline sf::Vector2i Tiling<GridMode::IsoDiamond>::getBottomleft() const {
 	auto center = fromScreen(view.getCenter());
 	auto range = sf::Vector2i{getRange()};
 	
-	// calculate topleft
+	// calculate bottomleft
 	// x - width + height / 2 & y + height / 2 : go to bottomleft corner
 	bottomleft.x = static_cast<unsigned int>(center.x) - range.x + range.y / 2;
 	bottomleft.y = static_cast<unsigned int>(center.y) + range.y / 2;
