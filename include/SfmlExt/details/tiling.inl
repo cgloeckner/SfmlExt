@@ -175,16 +175,10 @@ inline sf::Vector2i Tiling<GridMode::Orthogonal>::getTopleft() const {
 // specialization for isometric (diamond) maps
 template <>
 inline sf::Vector2i Tiling<GridMode::IsoDiamond>::getTopleft() const {
-	sf::Vector2i topleft;
-	auto center = fromScreen(view.getCenter());
-	auto range = sf::Vector2i{getRange()};
-	
-	// calculate topleft
-	// x - width : go to topleft corner
-	// x - 2 & y - 2 : because tile might be rendered centered (else: gap at top), vertical zigzag -> x2
-	topleft.x = static_cast<unsigned int>(center.x) - range.x - 2;
-	topleft.y = static_cast<unsigned int>(center.y) - 2;
-	
+	// Use view's center to determine topleft position
+	auto pos = view.getCenter() - view.getSize() / 2.f;
+	auto topleft = sf::Vector2i{fromScreen(pos)};
+	topleft -= sf::Vector2i{padding};
 	return topleft;
 }
 
@@ -203,16 +197,15 @@ inline sf::Vector2i Tiling<GridMode::Orthogonal>::getBottomleft() const {
 // specialization for isometric (diamond) maps
 template <>
 inline sf::Vector2i Tiling<GridMode::IsoDiamond>::getBottomleft() const {
-	sf::Vector2i bottomleft;
-	auto center = fromScreen(view.getCenter());
 	auto range = sf::Vector2i{getRange()};
 	
-	// calculate bottomleft
-	// x - width + height / 2 & y + height / 2 : go to bottomleft corner
-	bottomleft.x = static_cast<unsigned int>(center.x) - range.x + range.y / 2;
-	bottomleft.y = static_cast<unsigned int>(center.y) + range.y / 2;
+	// calculate bottomleft position
+	// note: zig-zack increases both coordinates by half height
+	auto pos = getTopleft();
+	pos.x += range.y / 2;
+	pos.y += range.y / 2;
 	
-	return bottomleft;
+	return pos;
 }
 
 // ---------------------------------------------------------------------------

@@ -64,25 +64,27 @@ BOOST_AUTO_TEST_CASE(tiling_ortho_boundary) {
 	
 	auto topleft = tiling.getTopleft();
 	auto bottomleft = tiling.getBottomleft();
-	BOOST_CHECK_EQUAL(topleft.x, bottomleft.x);
-	BOOST_CHECK_EQUAL(topleft.y + range.y, bottomleft.y);
+	BOOST_CHECK_EQUAL(bottomleft.x, topleft.x);
+	BOOST_CHECK_EQUAL(bottomleft.y, topleft.y + range.y);
 }
 
 BOOST_AUTO_TEST_CASE(tiling_ortho_padding) {
 	sfext::Tiling<sfext::GridMode::Orthogonal> tiling{{32.f, 28.f}};
 	sf::View view{{200.f, 200.f, 300.f, 200.f}};
 	tiling.setView(view);
-	auto range = tiling.getRange();
-	auto topleft = tiling.getTopleft();
-	auto bottomleft = tiling.getBottomleft();
+	auto old_range = tiling.getRange();
+	auto old_topleft = tiling.getTopleft();
 	tiling.setPadding({12u, 7u});
+	auto new_range = tiling.getRange();
+	auto new_topleft = tiling.getTopleft();
+	auto new_bottomleft = tiling.getBottomleft();
 	
-	BOOST_CHECK_EQUAL(tiling.getRange().x, range.x + 24u);
-	BOOST_CHECK_EQUAL(tiling.getRange().y, range.y + 14u);
-	BOOST_CHECK_EQUAL(tiling.getTopleft().x, topleft.x - 12u);
-	BOOST_CHECK_EQUAL(tiling.getTopleft().y, topleft.y - 7u);
-	BOOST_CHECK_EQUAL(topleft.x, bottomleft.x);
-	BOOST_CHECK_EQUAL(topleft.y + range.y, bottomleft.y);
+	BOOST_CHECK_EQUAL(new_range.x, old_range.x + 24u);
+	BOOST_CHECK_EQUAL(new_range.y, old_range.y + 14u);
+	BOOST_CHECK_EQUAL(new_topleft.x, old_topleft.x - 12u);
+	BOOST_CHECK_EQUAL(new_topleft.y, old_topleft.y - 7u);
+	BOOST_CHECK_EQUAL(new_bottomleft.x, new_topleft.x);
+	BOOST_CHECK_EQUAL(new_bottomleft.y, new_topleft.y + new_range.y);
 }
 
 BOOST_AUTO_TEST_CASE(tiling_ortho_iteration) {
@@ -158,10 +160,11 @@ BOOST_AUTO_TEST_CASE(tiling_isodiamond_boundary) {
 	BOOST_CHECK_EQUAL(range.x, 14);	// ceil(300/32) + 4 (default padding)
 	BOOST_CHECK_EQUAL(range.y, 24);	// (ceil(200/28) + 4 (default padding)) * 2 (iso height)
 	
-	auto center = sf::Vector2u{tiling.fromScreen(view.getCenter())};
+	auto topleft = tiling.getTopleft();
 	auto bottomleft = tiling.getBottomleft();
-	BOOST_CHECK_EQUAL(center.x - range.x + range.y / 2, bottomleft.x);
-	BOOST_CHECK_EQUAL(center.y + range.y / 2, bottomleft.y);
+	// note: going down in zig-zag will increase x- and y-coordinates by half height
+	BOOST_CHECK_EQUAL(bottomleft.x, topleft.x + range.y / 2);
+	BOOST_CHECK_EQUAL(bottomleft.y, topleft.y + range.y / 2);
 }
 
 BOOST_AUTO_TEST_CASE(tiling_isodiamond_toscreen) {
@@ -178,5 +181,23 @@ BOOST_AUTO_TEST_CASE(tiling_isodiamond_fromscreen) {
 	auto wpos = tiling.fromScreen({300.f, 140.f});
 	BOOST_CHECK_CLOSE(wpos.x, 19.375f, 0.0001f);
 	BOOST_CHECK_CLOSE(wpos.y, 0.625f, 0.0001f);
+}
+
+BOOST_AUTO_TEST_CASE(tiling_isodiamond_padding) {
+	sfext::Tiling<sfext::GridMode::IsoDiamond> tiling{{32.f, 28.f}};
+	sf::View view{{200.f, 200.f, 300.f, 200.f}};
+	tiling.setView(view);
+	auto old_range = tiling.getRange();
+	auto old_topleft = tiling.getTopleft();
+	tiling.setPadding({12u, 7u});
+	auto new_range = tiling.getRange();
+	auto new_topleft = tiling.getTopleft();
+	
+	BOOST_CHECK_EQUAL(new_range.x, old_range.x + 24u);
+	BOOST_CHECK_EQUAL(new_range.y, old_range.y + 14u);
+	BOOST_CHECK_EQUAL(new_topleft.x, old_topleft.x - 12u);
+	BOOST_CHECK_EQUAL(new_topleft.y, old_topleft.y - 7u);
+	
+	// tba: check bottomleft pos
 }
 
