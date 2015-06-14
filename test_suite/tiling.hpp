@@ -192,12 +192,14 @@ BOOST_AUTO_TEST_CASE(tiling_isodiamond_padding) {
 	tiling.setPadding({12u, 7u});
 	auto new_range = tiling.getRange();
 	auto new_topleft = tiling.getTopleft();
+	auto new_bottomleft = tiling.getBottomleft();
 	
 	BOOST_CHECK_EQUAL(new_range.x, old_range.x + 24u);
 	BOOST_CHECK_EQUAL(new_range.y, old_range.y + 14u);
 	BOOST_CHECK_EQUAL(new_topleft.x, old_topleft.x - 12u);
 	BOOST_CHECK_EQUAL(new_topleft.y, old_topleft.y - 7u);
-	
-	// tba: check bottomleft pos
+	// note: going down in zig-zag will increase x- and y-coordinates by half height
+	BOOST_CHECK_EQUAL(new_bottomleft.x, new_topleft.x + new_range.y / 2);
+	BOOST_CHECK_EQUAL(new_bottomleft.y, new_topleft.y + new_range.y / 2);
 }
 
