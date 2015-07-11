@@ -1,116 +1,154 @@
 #pragma once
-#include <type_traits>
-#include <string>
-#include <vector>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/System/Vector3.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Window/Joystick.hpp>
-#include <SFML/Window/VideoMode.hpp>
+#include <ostream>
+#include <ctime>
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <Thor/Input.hpp>
+#include <Thor/Graphics.hpp>
 
 namespace sfext {
 
-/// Base class for a logging mechanism
-/**
- * In order to use the predefined operator<< functions, your logger class must
- * be derived from this base class and implement the operator() method.
- */
-struct Logger {
-	/// Appends a line to the logger
-	/**
-	 * @param line comming in
-	 */
-	virtual void operator()(std::string const & line) = 0;
+// helper to get current date and time as string
+
+struct {
+	inline std::string operator()() const {
+		// create a string with the current date and time
+		time_t rawtime;
+		struct tm* timeinfo;
+		char buffer[80];
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+		strftime(buffer, 80, "%X %x ", timeinfo);
+		return std::string{buffer};
+	}
+} now;
+
+// ----------------------------------------------------------------------------
+// some type traits to detect whether T can be converted using thor::toString
+
+template <typename T>
+struct is_thor_primitive
+	: std::false_type {
 };
 
-// ---------------------------------------------------------------------------
+template <>
+struct is_thor_primitive<sf::Color>
+	: std::true_type {
+};
 
-/// Wrapper around std::vector<std::string> with a fixed number of elements
-/**
- * If the container is filled with the given number of elements and another
- * one is added, the first one is dropped.
- */
-class LogBuffer {
+template <>
+struct is_thor_primitive<sf::Keyboard::Key>
+	: std::true_type {
+};
+
+template <>
+struct is_thor_primitive<sf::Mouse::Button>
+	: std::true_type {
+};
+
+template <>
+struct is_thor_primitive<sf::Joystick::Axis>
+	: std::true_type {
+};
+
+template <typename T>
+struct is_thor_primitive<sf::Vector2<T>>
+	: std::true_type {
+};
+
+template <typename T>
+struct is_thor_primitive<sf::Vector3<T>>
+	: std::true_type {
+};
+
+template <typename T>
+struct is_thor_primitive<sf::Rect<T>>
+	: std::true_type {
+};
+
+// ----------------------------------------------------------------------------
+// some type traits to detect whether T can be converted using sfext::toString
+
+template <typename T>
+struct is_sfext_primitive
+	: std::false_type {
+};
+
+template <>
+struct is_sfext_primitive<sf::Time>
+	: std::true_type {
+};
+
+template <>
+struct is_sfext_primitive<sf::VideoMode>
+	: std::true_type {
+};
+
+template <>
+struct is_sfext_primitive<decltype(now)>
+	: std::true_type {
+};
+
+// ----------------------------------------------------------------------------
+// conversion helpers
+
+inline std::string toString(sf::Time const & t) {
+	return std::to_string(t.asMilliseconds()) + "ms";
+}
+
+inline std::string toString(sf::VideoMode const & m) {
+	return std::to_string(m.width) + "x" + std::to_string(m.height) + "x"
+		+ std::to_string(m.bitsPerPixel);
+}
+
+inline std::string toString(decltype(now) const & n) {
+	return n();
+}
+
+// ----------------------------------------------------------------------------
+// enable streaming various types to std::ostream
+
+template <typename T>
+typename std::enable_if<is_thor_primitive<T>::value, std::ostream&>::type
+operator<<(std::ostream& lhs, T const & rhs) {
+	return lhs << thor::toString(rhs);
+}
+
+template <typename T>
+typename std::enable_if<is_sfext_primitive<T>::value, std::ostream&>::type
+operator<<(std::ostream& lhs, T const & rhs) {
+	return lhs << toString(rhs);
+}
+
+// ----------------------------------------------------------------------------
+// actual logging wrapper
+
+class Logger {
+	template <typename T>
+	friend Logger& operator<<(Logger& lhs, T const & rhs);
+
 	private:
-		using container = std::vector<std::string>;
-		using const_iterator = container::const_iterator;
-		
-		/// buffer for the last n elements
-		container buffer;
-		
-		/// number of elements
-		std::size_t num_elements;
+		std::vector<std::ostream*> streams;
 		
 	public:
-		/// Create a new LogBuffer
-		/**
-		 * @param num_elements to store
-		 */
-		LogBuffer(std::size_t num_elements);
+		inline void add(std::ostream& stream) {
+			streams.push_back(&stream);
+		}
 		
-		/// Add a new line
-		/**
-		 * This might drop the first one.
-		 * @param line to add
-		 */
-		void addLine(std::string const & line);
-		
-		/// Returns reference to the last item
-		/**
-		 * This method can be used to e.g. add characters to the last line.
-		 * The behavior is undefined if the container is empty.
-		 * @return reference to last item
-		 */
-		std::string& getLast();
-		
-		/// Check whether the container is empty
-		/**
-		 * @return true if empty
-		 */
-		bool isEmpty() const;
-		
-		/// Get const_iterator to the first element
-		/**
-		 * @return const_iterator to beginning
-		 */
-		const_iterator begin() const;
-		
-		/// Get const_iterator to the end (no valid element)
-		/**
-		 * @return const_iterator to end (no valid element)
-		 */
-		const_iterator end() const;
+		inline void flush() {
+			for (auto& ptr: streams) {
+				ptr->flush();
+			}
+		}
 };
 
-// ---------------------------------------------------------------------------
-// multiple operator<< overloads
-
-Logger& operator<<(Logger& left, std::string const & str);
-Logger& operator<<(Logger& left, const char * str);
-Logger& operator<<(Logger& left, sf::Time const & value);
-Logger& operator<<(Logger& left, sf::Color const & value);
-Logger& operator<<(Logger& left, sf::Keyboard::Key value);
-Logger& operator<<(Logger& left, sf::Mouse::Button value);
-Logger& operator<<(Logger& left, sf::Joystick::Axis value);
-Logger& operator<<(Logger& left, sf::VideoMode value);
-
 template <typename T>
-Logger& operator<<(Logger& left, sf::Vector2<T> const & value);
-
-template <typename T>
-Logger& operator<<(Logger& left, sf::Vector3<T> const & value);
-
-template <typename T>
-Logger& operator<<(Logger& left, sf::Rect<T> const & value);
-
-template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, Logger&>::type
-operator<<(Logger& left, T value);
+Logger& operator<<(Logger& lhs, T const & rhs) {
+	for (auto& ptr: lhs.streams) {
+		(*ptr) << rhs;
+	}
+	return lhs;
+}
 
 } // ::sfext
-
-#include <SfmlExt/details/logger.inl>
