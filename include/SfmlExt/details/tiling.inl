@@ -99,8 +99,9 @@ inline sf::Vector2u Tiling<GridMode::Orthogonal>::getRange() const {
 	
 	// calculate range
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
-	range.x = static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2;
-	range.y = static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2;
+	// note: two casts necessary to avoid undefined behavior
+	range.x = static_cast<unsigned int>(static_cast<int>(std::ceil(size.x / tile_size.x))) + 2;
+	range.y = static_cast<unsigned int>(static_cast<int>(std::ceil(size.y / tile_size.y))) + 2;
 	
 	// apply padding
 	range += padding * 2u;
@@ -118,8 +119,9 @@ inline sf::Vector2u Tiling<GridMode::IsoDiamond>::getRange() const {
 	// size + 2 : because tile might be rendered centered (else: gap at bottom/right)
 	// size + 2 : because topleft starts 2 rows above (see topleft calc)
 	// height x 2 : because of vertical zig-zag
-	range.x =  static_cast<unsigned int>(std::ceil(size.x / tile_size.x)) + 2 + 2;
-	range.y = (static_cast<unsigned int>(std::ceil(size.y / tile_size.y)) + 2 + 2) * 2;
+	// note: two casts necessary to avoid undefined behavior
+	range.x =  static_cast<unsigned int>(static_cast<int>(std::ceil(size.x / tile_size.x))) + 2 + 2;
+	range.y = (static_cast<unsigned int>(static_cast<int>(std::ceil(size.y / tile_size.y))) + 2 + 2) * 2;
 	
 	// apply padding
 	range += padding * 2u;
@@ -166,8 +168,9 @@ inline sf::Vector2i Tiling<GridMode::Orthogonal>::getTopleft() const {
 	
 	// calculate topleft
 	// x - width / 2 & y - height / 2 : go to topleft corner
-	topleft.x = static_cast<unsigned int>(center.x - std::ceil(range.x / 2.f));
-	topleft.y = static_cast<unsigned int>(center.y - std::ceil(range.y / 2.f));
+	// note: two casts necessary to avoid undefined behavior
+	topleft.x = static_cast<unsigned int>(static_cast<int>(center.x - std::ceil(range.x / 2.f)));
+	topleft.y = static_cast<unsigned int>(static_cast<int>(center.y - std::ceil(range.y / 2.f)));
 	
 	return topleft;
 }
