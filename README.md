@@ -1,4 +1,6 @@
 # What is SfmlExt?
+**Note**: SfmlExt is currently outdated and not actively developed at the moment. While working on my topdown dungeoncrawler/rogue-like, I modified lots of pieces related to this repository. Once those pieces have evolved, I'll update / recreate this repository. For more info see http://en.sfml-dev.org/forums/index.php?topic=16367.0
+
 It is a small set of features I found useful when writing Games using C++ and SFML. Feel free to explore :)
 
 ## Dependencies
